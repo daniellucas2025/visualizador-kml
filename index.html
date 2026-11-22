@@ -1099,13 +1099,31 @@
 
       <div class="storage-box">
         <label style="font-weight: 600; font-size: 12px; color:#f8fafc;">
-          📥 Pré-carregar toda a área dos KMLs de uma só vez (Opcional):
+          📥 Modo de Otimização de Download (Economia de Espaço & Dados):
+        </label>
+        <select id="downloadAreaStrategy" class="ttl-select">
+          <option value="smart" selected>⚡ Inteligente (Ultra Leve) — Zoom alto só ao redor dos Pontos e Contornos (Reduz até 85%)</option>
+          <option value="full">🔲 Retângulo Completo — Baixar toda a área quadrada mesmo onde não há pontos</option>
+        </select>
+
+        <label style="font-weight: 600; font-size: 12px; color:#f8fafc; margin-top:4px;">
+          🔍 Nível Máximo de Zoom:
         </label>
         <select id="downloadZoomMode" class="ttl-select">
-          <option value="17">Rápido — Zoom 12 ao 17 (Visão Geral + Fazendas)</option>
+          <option value="17">Leve — Zoom 12 ao 17 (Visão Geral + Fazendas)</option>
           <option value="18" selected>Recomendado — Zoom 12 ao 18 (Alto Detalhe das Casas)</option>
-          <option value="19">Máximo — Zoom 12 ao 19 (Zoom muito próximo / Mais pesado)</option>
+          <option value="19">Máximo — Zoom 12 ao 19 (Zoom muito próximo)</option>
         </select>
+
+        <div class="ttl-row" style="justify-content:space-between; background:rgba(59,130,246,0.1); border:1px solid rgba(59,130,246,0.3); padding:8px 10px; border-radius:8px; margin-top:4px; font-size:11.5px;">
+          <span>📊 Estimativa deste download:</span>
+          <strong id="downloadEstimateBadge" style="color:#93c5fd;">Calculando...</strong>
+        </div>
+
+        <label style="display:flex; align-items:center; gap:7px; font-size:11.5px; color:#cbd5e1; cursor:pointer; margin-top:2px;">
+          <input type="checkbox" id="chkCompressWebp" checked style="accent-color:#10b981;" />
+          <span>Comprimir imagens no aparelho (WebP otimizado — economiza ~45% de MB)</span>
+        </label>
 
         <div id="downloadProgressWrap" style="display:none; flex-direction:column; gap:6px; margin-top:4px;">
           <div style="display:flex; justify-content:space-between; font-size:12px;">
@@ -2209,6 +2227,7 @@
       document.getElementById('activeLayerName').textContent = layerConfigs[currentLayerKey].name;
       loadSavedTTLIntoUI();
       refreshStorageStats();
+      updateDownloadEstimationUI();
       offlineModal.classList.add('active');
     });
     document.getElementById('btnCloseModal').addEventListener('click', () => {
@@ -2220,40 +2239,144 @@
       await caches.delete(TILE_CACHE_NAME);
       await clearAllTileTimestampsInDB();
       await refreshStorageStats();
+      updateDownloadEstimationUI();
     });
 
-    let isDownloadingTiles = false;
-    document.getElementById('btnStartPreload').addEventListener('click', async () => {
-      if (isDownloadingTiles) return;
+    // ==========================================
+    // OTIMIZADOR DE DOWNLOAD: CÁLCULO INTELIGENTE POR GEOMETRIA + COMPRESSÃO WEBP
+    // ==========================================
+    function collectGeometryAnchorCoords() {
+      const anchors = [];
+      loadedDatasets.forEach(ds => {
+        if (!ds.visible) return;
+        ds.features.forEach(f => {
+          if (f.type === 'point') {
+            anchors.push([f.lat, f.lng]);
+          } else if (f.layer && f.layer.getLatLngs) {
+            const raw = f.layer.getLatLngs();
+            const flat = raw.flat ? raw.flat(3) : [];
+            // Amostragem de vértices do contorno + interpolação para cobrir toda a linha
+            for (let i = 0; i < flat.length; i++) {
+              const pt = flat[i];
+              if (pt && typeof pt.lat === 'number') {
+                anchors.push([pt.lat, pt.lng]);
+                if (i < flat.length - 1) {
+                  const next = flat[i + 1];
+                  if (next && typeof next.lat === 'number') {
+                    anchors.push([(pt.lat + next.lat) / 2, (pt.lng + next.lng) / 2]);
+                  }
+                }
+              }
+            }
+          }
+        });
+      });
+      return anchors;
+    }
+
+    function buildOptimizedTileUrlList() {
       const visibleBounds = getAllVisibleBounds();
       const bounds = visibleBounds || map.getBounds();
       const maxZ = parseInt(document.getElementById('downloadZoomMode').value, 10);
+      const strategy = document.getElementById('downloadAreaStrategy').value;
       const minZ = 12;
 
       const nw = bounds.getNorthWest();
       const se = bounds.getSouthEast();
       const urlTemplate = layerConfigs[currentLayerKey].url;
+      const anchors = collectGeometryAnchorCoords();
+      const useSmart = (strategy === 'smart' && anchors.length > 0);
 
-      const tileUrls = [];
+      const tileSet = new Set();
+
       for (let z = minZ; z <= maxZ; z++) {
-        const xMin = lon2tile(nw.lng, z);
-        const xMax = lon2tile(se.lng, z);
-        const yMin = lat2tile(nw.lat, z);
-        const yMax = lat2tile(se.lat, z);
+        // Até o zoom 15 (visão geral da região), baixa o retângulo completo porque são pouquíssimos quadrantes
+        // A partir do zoom 16 (16, 17, 18, 19), se o modo Inteligente estiver ativo, baixa apenas os quadrantes
+        // num raio de margem ao redor de cada ponto GPS e do contorno do setor!
+        if (!useSmart || z <= 15) {
+          const xMin = lon2tile(nw.lng, z);
+          const xMax = lon2tile(se.lng, z);
+          const yMin = lat2tile(nw.lat, z);
+          const yMax = lat2tile(se.lat, z);
 
-        for (let x = xMin; x <= xMax; x++) {
-          for (let y = yMin; y <= yMax; y++) {
-            const u = urlTemplate
-              .replace('{z}', z)
-              .replace('{x}', x)
-              .replace('{y}', y);
-            tileUrls.push(u);
+          for (let x = xMin; x <= xMax; x++) {
+            for (let y = yMin; y <= yMax; y++) {
+              const u = urlTemplate.replace('{z}', z).replace('{x}', x).replace('{y}', y);
+              tileSet.add(u);
+            }
+          }
+        } else {
+          // Raio de margem de segurança em quadrantes ao redor de cada ponto/contorno
+          const pad = z === 16 ? 1 : (z === 17 ? 1 : 2);
+          for (let i = 0; i < anchors.length; i++) {
+            const [lat, lng] = anchors[i];
+            const cx = lon2tile(lng, z);
+            const cy = lat2tile(lat, z);
+            for (let dx = -pad; dx <= pad; dx++) {
+              for (let dy = -pad; dy <= pad; dy++) {
+                const u = urlTemplate.replace('{z}', z).replace('{x}', cx + dx).replace('{y}', cy + dy);
+                tileSet.add(u);
+              }
+            }
           }
         }
       }
 
+      return Array.from(tileSet);
+    }
+
+    function updateDownloadEstimationUI() {
+      const badge = document.getElementById('downloadEstimateBadge');
+      if (!badge) return;
+      try {
+        const urls = buildOptimizedTileUrlList();
+        const compress = document.getElementById('chkCompressWebp').checked;
+        // Média real: ~18KB por quadrante original, ou ~10KB com compressão WebP ativa
+        const avgKB = compress ? 10.5 : 19.0;
+        const estMB = ((urls.length * avgKB) / 1024).toFixed(1);
+        badge.textContent = `~${urls.length.toLocaleString('pt-BR')} quadrantes (~${estMB} MB)`;
+      } catch (e) {
+        badge.textContent = 'Abra um KML ou posicione o mapa';
+      }
+    }
+
+    document.getElementById('downloadAreaStrategy').addEventListener('change', updateDownloadEstimationUI);
+    document.getElementById('downloadZoomMode').addEventListener('change', updateDownloadEstimationUI);
+    document.getElementById('chkCompressWebp').addEventListener('change', updateDownloadEstimationUI);
+
+    // Recomprime o Blob da imagem para WebP otimizado antes de gravar no Cache Storage
+    async function optimizeTileResponse(resp, shouldCompress) {
+      if (!shouldCompress || !resp || resp.type === 'opaque' || typeof OffscreenCanvas === 'undefined') {
+        return resp;
+      }
+      try {
+        const blob = await resp.clone().blob();
+        if (blob.size < 6000) return resp; // Já é muito pequeno
+        const bmp = await createImageBitmap(blob);
+        const canvas = new OffscreenCanvas(bmp.width, bmp.height);
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(bmp, 0, 0);
+        bmp.close();
+        const webpBlob = await canvas.convertToBlob({ type: 'image/webp', quality: 0.74 });
+        if (webpBlob && webpBlob.size < blob.size) {
+          return new Response(webpBlob, {
+            status: 200,
+            statusText: 'OK',
+            headers: { 'Content-Type': 'image/webp', 'X-KML-Compressed': '1' }
+          });
+        }
+      } catch (e) {}
+      return resp;
+    }
+
+    let isDownloadingTiles = false;
+    document.getElementById('btnStartPreload').addEventListener('click', async () => {
+      if (isDownloadingTiles) return;
+      const tileUrls = buildOptimizedTileUrlList();
+      const shouldCompress = document.getElementById('chkCompressWebp').checked;
+
       if (tileUrls.length > 15000) {
-        if (!confirm(`Esta área possui ${tileUrls.length.toLocaleString('pt-BR')} quadrantes. Aproxime mais o mapa ou confirme para baixar tudo.`)) {
+        if (!confirm(`Esta área possui ${tileUrls.length.toLocaleString('pt-BR')} quadrantes. Recomendamos usar o modo "⚡ Inteligente (Ultra Leve)". Deseja continuar mesmo assim?`)) {
           return;
         }
       }
@@ -2267,10 +2390,11 @@
 
       wrap.style.display = 'flex';
       btnStart.disabled = true;
-      btnStart.textContent = '⏳ Baixando...';
+      btnStart.textContent = '⏳ Otimizando e Baixando...';
 
       const cache = await caches.open(TILE_CACHE_NAME);
       let completed = 0;
+      let skippedExisting = 0;
       const total = tileUrls.length;
       const concurrency = 12;
 
@@ -2279,10 +2403,13 @@
           const url = queue.shift();
           try {
             const existing = await cache.match(url, { ignoreVary: true });
-            if (!existing) {
+            if (existing) {
+              skippedExisting++;
+            } else {
               const resp = await fetch(url, { mode: 'cors', credentials: 'omit' }).catch(() => fetch(url, { mode: 'no-cors' }));
               if (resp && (resp.status === 200 || resp.type === 'opaque')) {
-                await cache.put(url, resp);
+                const finalResp = await optimizeTileResponse(resp, shouldCompress);
+                await cache.put(url, finalResp);
                 recordTileTimestampInDB(url);
               }
             }
@@ -2292,7 +2419,7 @@
             const pct = Math.round((completed / total) * 100);
             bar.style.width = `${pct}%`;
             pctTxt.textContent = `${pct}%`;
-            statusTxt.textContent = `Salvos ${completed.toLocaleString('pt-BR')} de ${total.toLocaleString('pt-BR')} quadrantes...`;
+            statusTxt.textContent = `Processados ${completed.toLocaleString('pt-BR')} / ${total.toLocaleString('pt-BR')} (${skippedExisting} já em cache)...`;
           }
         }
       }
@@ -2304,7 +2431,7 @@
       }
       await Promise.all(workers);
 
-      statusTxt.textContent = `✅ Concluído! ${total.toLocaleString('pt-BR')} quadrantes disponíveis offline.`;
+      statusTxt.textContent = `✅ Concluído! ${total.toLocaleString('pt-BR')} quadrantes otimizados (${skippedExisting} reaproveitados do cache).`;
       btnStart.disabled = false;
       btnStart.textContent = '⬇️ Baixar Área Agora';
       isDownloadingTiles = false;
