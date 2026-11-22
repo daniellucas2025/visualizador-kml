@@ -52,12 +52,12 @@
     }
 
     /* ==========================================
-       HEADER / BARRA DO TOPO
+       HEADER / BARRA DO TOPO LIMPA E FLUIDA
        ========================================== */
     header {
       background-color: var(--bg-panel);
       border-bottom: 1px solid var(--border);
-      padding: 8px 12px;
+      padding: 7px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -78,12 +78,12 @@
       border: 1px solid var(--border);
       color: var(--text-main);
       height: 36px;
-      padding: 0 10px;
+      padding: 0 11px;
       border-radius: 9px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
       font-size: 13px;
       font-weight: 600;
       transition: all 0.15s;
@@ -102,21 +102,23 @@
       font-weight: 700;
     }
 
+    /* Logo clicável para abrir arquivos KML/KMZ */
     .brand {
       display: flex;
       align-items: center;
       gap: 9px;
       cursor: pointer;
-      padding: 3px 8px 3px 3px;
+      padding: 3px 10px 3px 4px;
       border-radius: 10px;
-      border: 1px solid transparent;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+      background: rgba(59, 130, 246, 0.08);
       transition: all 0.15s ease;
       user-select: none;
     }
 
     .brand:hover {
-      background: rgba(59, 130, 246, 0.14);
-      border-color: rgba(59, 130, 246, 0.4);
+      background: rgba(59, 130, 246, 0.18);
+      border-color: rgba(59, 130, 246, 0.5);
     }
 
     .brand:active {
@@ -124,14 +126,14 @@
     }
 
     .brand-icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
       background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
+      font-size: 17px;
       box-shadow: 0 3px 10px rgba(59, 130, 246, 0.35);
       position: relative;
       flex-shrink: 0;
@@ -156,7 +158,7 @@
     }
 
     .brand-text h1 {
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 700;
       letter-spacing: -0.02em;
       display: flex;
@@ -273,7 +275,7 @@
     }
 
     .sidebar {
-      width: 375px;
+      width: 370px;
       max-width: 88vw;
       background-color: var(--bg-panel);
       border-right: 1px solid var(--border);
@@ -286,7 +288,7 @@
     }
 
     .sidebar.collapsed {
-      margin-left: -375px;
+      margin-left: -370px;
     }
 
     .sidebar-header {
@@ -297,6 +299,88 @@
       gap: 10px;
     }
 
+    /* Seção de Configurações Organizada na Sidebar */
+    .settings-accordion {
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .settings-summary {
+      padding: 9px 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      list-style: none;
+    }
+
+    .settings-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .settings-summary:hover {
+      background: rgba(51, 65, 85, 0.4);
+    }
+
+    .settings-body {
+      padding: 10px 12px 12px 12px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .layer-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    .layer-option-btn {
+      background: var(--bg-dark);
+      border: 1px solid var(--border);
+      color: #cbd5e1;
+      padding: 7px 8px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+      text-align: left;
+    }
+
+    .layer-option-btn:hover {
+      border-color: #64748b;
+    }
+
+    .layer-option-btn.active {
+      background: rgba(59, 130, 246, 0.2);
+      border-color: var(--accent);
+      color: #fff;
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .setting-switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-top: 4px;
+      border-top: 1px solid rgba(51, 65, 85, 0.6);
+      color: #cbd5e1;
+      font-size: 12px;
+    }
+
     .sidebar-title-row {
       display: flex;
       align-items: center;
@@ -305,7 +389,7 @@
     }
 
     .sidebar-title-row h2 {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       color: #e2e8f0;
       display: flex;
@@ -332,7 +416,7 @@
       display: flex;
       flex-direction: column;
       gap: 6px;
-      max-height: 175px;
+      max-height: 155px;
       overflow-y: auto;
       padding-right: 2px;
     }
@@ -624,137 +708,87 @@
     }
 
     /* ==========================================
-       MAPA & BOTÕES DE CAMADA DE SATÉLITE
+       VIEWPORT DO MAPA & ROTAÇÃO COM 2 DEDOS
        ========================================== */
-    #map {
+    .map-viewport {
       flex: 1;
       height: 100%;
       width: 100%;
+      position: relative;
+      overflow: hidden;
       background: #0b1120;
+      touch-action: none;
     }
 
-    .map-floating-bar {
+    /* Superfície rotacionável expandida para não mostrar cantos vazios ao girar */
+    #map {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      z-index: 800;
-      display: flex;
-      gap: 4px;
-      background: rgba(15, 23, 42, 0.9);
-      backdrop-filter: blur(8px);
-      padding: 4px;
-      border-radius: 10px;
-      border: 1px solid #334155;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
-      max-width: calc(100vw - 20px);
-      overflow-x: auto;
-      scrollbar-width: none;
+      width: 145%;
+      height: 145%;
+      left: -22.5%;
+      top: -22.5%;
+      background: #0b1120;
+      transform-origin: 50% 50%;
+      will-change: transform;
     }
 
-    .map-floating-bar::-webkit-scrollbar {
-      display: none;
-    }
-
-    .layer-btn {
-      background: transparent;
-      border: none;
-      color: #cbd5e1;
-      padding: 6px 10px;
-      border-radius: 7px;
-      font-size: 11.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .layer-btn.active {
-      background: var(--accent);
-      color: #fff;
-      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    /* Contra-rotação automática nos pinos e popups para ficarem sempre em pé */
+    .kml-pin,
+    .leaflet-popup {
+      transform: rotate(calc(-1 * var(--map-bearing, 0deg)));
+      transition: transform 0.05s linear;
     }
 
     /* ==========================================
-       RESPONSIVIDADE MOBILE (CELULAR)
+       BOTÕES FLUTUANTES DO MAPA (BÚSSOLA NORTE & GPS)
        ========================================== */
-    @media (max-width: 768px) {
-      header {
-        padding: 6px 8px;
-        gap: 6px;
-      }
-
-      .brand-text p {
-        display: none;
-      }
-
-      .brand-text h1 .app-title-text {
-        display: none;
-      }
-
-      .btn .btn-label-desktop {
-        display: none;
-      }
-
-      .btn {
-        padding: 0 9px;
-        height: 34px;
-        font-size: 12px;
-      }
-
-      /* Sidebar Esquerda Gaveta (Drawer) no Celular */
-      .sidebar {
-        position: absolute;
-        left: 0;
-        top: 0;
-        bottom: 0;
-        width: 330px;
-        max-width: 86vw;
-        margin-left: 0 !important;
-        transform: translateX(0);
-        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.65);
-      }
-
-      .sidebar.collapsed {
-        transform: translateX(-105%);
-      }
-
-      .close-sidebar-mobile {
-        display: inline-flex;
-      }
-
-      /* Barra de Satélite Centralizada e Compacta no Celular */
-      .map-floating-bar {
-        top: 8px;
-        left: 8px;
-        right: 8px;
-        max-width: none;
-        justify-content: space-between;
-        padding: 3px;
-      }
-
-      .layer-btn {
-        flex: 1;
-        justify-content: center;
-        padding: 6px 5px;
-        font-size: 11px;
-      }
-
-      .layer-btn .layer-sub {
-        display: none;
-      }
+    .gmaps-compass-btn {
+      position: absolute;
+      bottom: 142px;
+      right: 10px;
+      z-index: 850;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #f8fafc;
+      display: none; /* Oculto quando apontado para o Norte (0°) */
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+      transition: background-color 0.15s, transform 0.15s;
     }
 
-    /* Botão Flutuante de Localização (Estilo Google Maps) acima do Zoom */
+    .gmaps-compass-btn.visible {
+      display: flex;
+    }
+
+    .gmaps-compass-btn:hover {
+      background: #334155;
+    }
+
+    .gmaps-compass-btn:active {
+      transform: scale(0.92);
+    }
+
+    .compass-needle-wrap {
+      width: 26px;
+      height: 26px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transform: rotate(var(--map-bearing, 0deg));
+    }
+
     .gmaps-locate-btn {
       position: absolute;
       bottom: 92px;
       right: 10px;
-      z-index: 800;
-      width: 40px;
-      height: 40px;
+      z-index: 850;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
       background: #1e293b;
       border: 1px solid #475569;
@@ -770,7 +804,6 @@
     .gmaps-locate-btn:hover {
       background: #334155;
       color: #60a5fa;
-      transform: translateY(-1px);
     }
 
     .gmaps-locate-btn:active {
@@ -792,6 +825,51 @@
       0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.55); }
       70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
       100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+    }
+
+    /* ==========================================
+       RESPONSIVIDADE MOBILE (CELULAR)
+       ========================================== */
+    @media (max-width: 768px) {
+      header {
+        padding: 6px 8px;
+        gap: 6px;
+      }
+
+      .brand-text p {
+        display: none;
+      }
+
+      .btn .btn-label-desktop {
+        display: none;
+      }
+
+      .btn {
+        padding: 0 10px;
+        height: 34px;
+        font-size: 12px;
+      }
+
+      /* Sidebar Esquerda Gaveta (Drawer) no Celular */
+      .sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 335px;
+        max-width: 86vw;
+        margin-left: 0 !important;
+        transform: translateX(0);
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.65);
+      }
+
+      .sidebar.collapsed {
+        transform: translateX(-105%);
+      }
+
+      .close-sidebar-mobile {
+        display: inline-flex;
+      }
     }
 
     /* Dropzone Overlay */
@@ -939,12 +1017,6 @@
       border: 2px solid #ffffff;
       border-radius: 50%;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
-      transition: transform 0.15s ease;
-    }
-
-    .kml-pin:hover {
-      transform: scale(1.22);
-      z-index: 9999 !important;
     }
 
     /* User GPS Pulse Marker */
@@ -1022,7 +1094,7 @@
 </head>
 <body>
 
-  <!-- Input de Arquivo Oculto Acionado pelo Ícone do Programa e Botões -->
+  <!-- Input de Arquivo Oculto Acionado pela Logo do Programa -->
   <input type="file" id="fileInput" accept=".kml,.kmz,.xml" multiple style="display:none;" />
 
   <!-- Drag and Drop Overlay -->
@@ -1146,7 +1218,7 @@
     </div>
   </div>
 
-  <!-- Header -->
+  <!-- Header Limpo e Fluido -->
   <header>
     <div class="header-left">
       <!-- Botão para abrir/fechar a Sidebar Esquerda -->
@@ -1156,34 +1228,26 @@
         <span class="sidebar-count-pill" id="totalItemsPill">0</span>
       </button>
 
-      <!-- Clicar no Ícone do Programa abre o Seletor de Arquivos KML/KMZ -->
-      <div class="brand" id="brandOpenKml" title="Clique no ícone para adicionar arquivos .KML ou .KMZ">
+      <!-- Clicar na Logo do Programa abre o Seletor de Arquivos KML/KMZ -->
+      <div class="brand" id="brandOpenKml" title="Clique aqui para abrir ou adicionar arquivos .KML / .KMZ">
         <div class="brand-icon">📍</div>
         <div class="brand-text">
           <h1>
-            <span class="app-title-text">KML Viewer</span>
+            <span>Abrir KML</span>
             <span class="status-pill" id="netStatusPill">● Online</span>
           </h1>
-          <p>Clique aqui para abrir KML / KMZ</p>
+          <p>Toque na logo para adicionar KML / KMZ</p>
         </div>
       </div>
     </div>
 
     <div class="toolbar">
-      <button class="btn btn-primary" id="btnAddKmlToolbar" title="Adicionar um ou mais arquivos KML/KMZ">
-        📂 <span class="btn-label-desktop">Adicionar</span> KML
-      </button>
-
       <button class="btn btn-success" id="btnOpenOfflineModal" title="Configurar tempo de cache e mapa offline">
         📥 <span class="btn-label-desktop">Offline</span> (<span id="headerTileCount">0</span>)
       </button>
 
       <button class="btn" id="btnFitBounds" title="Enquadrar todos os KMLs visíveis">
         🎯 <span class="btn-label-desktop">Enquadrar</span>
-      </button>
-
-      <button class="btn" id="btnToggleLabels" title="Mostrar/Ocultar números nos pontos">
-        🔢 <span class="btn-label-desktop">Rótulos</span>
       </button>
 
       <button class="btn btn-warning" id="btnInstallPWA" style="display:none;">
@@ -1200,17 +1264,45 @@
     <!-- Sidebar Esquerda -->
     <aside class="sidebar" id="leftSidebar">
       <div class="sidebar-header">
+        <!-- 1. Configurações de Mapa e Exibição na Sidebar -->
+        <details class="settings-accordion">
+          <summary class="settings-summary">
+            <span>⚙️ Configurações de Mapa & Exibição</span>
+            <span style="font-size:11px; color:var(--text-muted);">▼</span>
+          </summary>
+          <div class="settings-body">
+            <div style="font-weight:600; color:#93c5fd; font-size:11.5px;">🗺️ Tipo de Mapa / Satélite:</div>
+            <div class="layer-grid">
+              <button class="layer-option-btn active" data-layer="hybrid">🛰️ Satélite + Ruas</button>
+              <button class="layer-option-btn" data-layer="satellite">🌎 Satélite Puro</button>
+              <button class="layer-option-btn" data-layer="streets">🗺️ Ruas (Google)</button>
+              <button class="layer-option-btn" data-layer="osm">🧭 OpenStreetMap</button>
+              <button class="layer-option-btn" data-layer="terrain" style="grid-column: span 2;">⛰️ Relevo / Topográfico</button>
+            </div>
+
+            <label class="setting-switch-row" style="cursor:pointer;">
+              <span>🔢 Mostrar números nos pontos</span>
+              <input type="checkbox" id="chkShowPointLabels" checked style="accent-color:#3b82f6; width:16px; height:16px;" />
+            </label>
+
+            <div style="font-size:11px; color:var(--text-muted); line-height:1.35;">
+              💡 <b>Dica:</b> Gire o mapa com <b>2 dedos</b> na tela (ou segure <code>Alt + Shift + Arrastar</code> no mouse).
+            </div>
+          </div>
+        </details>
+
+        <!-- 2. Lista de Arquivos KML Carregados -->
         <div class="sidebar-title-row">
-          <h2>🗂️ Arquivos KML Carregados (<span id="loadedFilesCount">0</span>)</h2>
+          <h2>🗂️ Arquivos KML (<span id="loadedFilesCount">0</span>)</h2>
           <div style="display:flex; gap:4px; align-items:center;">
             <button class="btn" id="btnClearAllKmls" style="height:26px; padding:0 8px; font-size:11px; display:none; color:#fca5a5;">Limpar Todos</button>
             <button class="close-sidebar-mobile" id="btnCloseSidebarMobile" title="Fechar painel">✕</button>
           </div>
         </div>
 
-        <!-- Lista de KMLs Abertos Simultaneamente -->
         <div class="kml-files-section" id="kmlFilesList"></div>
 
+        <!-- 3. Busca e Filtros -->
         <div class="search-box">
           <span class="search-icon">🔍</span>
           <input type="text" id="searchInput" placeholder="Buscar ponto, fazenda, responsável, arquivo..." />
@@ -1227,15 +1319,22 @@
       <div class="items-list" id="itemsList"></div>
     </aside>
 
-    <!-- Map -->
-    <div id="map">
-      <div class="map-floating-bar">
-        <button class="layer-btn active" data-layer="hybrid">🛰️ Híbrido</button>
-        <button class="layer-btn" data-layer="satellite">🌎 Satélite</button>
-        <button class="layer-btn" data-layer="streets">🗺️ Ruas</button>
-        <button class="layer-btn" data-layer="osm">🧭 OSM</button>
-        <button class="layer-btn" data-layer="terrain">⛰️ Relevo</button>
-      </div>
+    <!-- Map Viewport (Suporta Rotação com 2 Dedos) -->
+    <div class="map-viewport" id="mapViewport">
+      <div id="map"></div>
+
+      <!-- Botão de Bússola / Norte (Oculto quando já está a 0° Norte; aparece ao girar o mapa) -->
+      <button class="gmaps-compass-btn" id="btnResetNorth" title="Apontar mapa para o Norte (0°)">
+        <div class="compass-needle-wrap">
+          <svg width="24" height="24" viewBox="0 0 24 24">
+            <!-- Ponta Norte Vermelha -->
+            <polygon points="12,2 16,12 8,12" fill="#ef4444" />
+            <!-- Ponta Sul Branca/Cinza -->
+            <polygon points="12,22 16,12 8,12" fill="#cbd5e1" />
+            <circle cx="12" cy="12" r="2" fill="#0f172a" />
+          </svg>
+        </div>
+      </button>
 
       <!-- Botão de Localização Estilo Google Maps (Acima do Zoom) -->
       <button class="gmaps-locate-btn" id="btnMyLocation" title="Minha localização GPS atual">
@@ -1383,7 +1482,7 @@
     updateNetworkBadge();
 
     // ==========================================
-    // 1. SIDEBAR ESQUERDA (DRAWER) & CLIQUE NO ÍCONE DO PROGRAMA
+    // 1. SIDEBAR ESQUERDA (DRAWER) & CLIQUE NA LOGO DO PROGRAMA
     // ==========================================
     const leftSidebar = document.getElementById('leftSidebar');
     const sidebarBackdrop = document.getElementById('sidebarBackdrop');
@@ -1414,7 +1513,6 @@
       }
     }
 
-    // No celular começa com a sidebar recolhida para mostrar o mapa inteiro
     if (isMobileViewport()) {
       leftSidebar.classList.add('collapsed');
     }
@@ -1423,7 +1521,6 @@
     document.getElementById('btnCloseSidebarMobile').addEventListener('click', closeSidebar);
     sidebarBackdrop.addEventListener('click', closeSidebar);
 
-    // Clicar no ícone/logo do programa abre o seletor de arquivos KML
     function triggerOpenFileDialog() {
       const input = document.getElementById('fileInput');
       input.value = '';
@@ -1431,19 +1528,134 @@
     }
 
     document.getElementById('brandOpenKml').addEventListener('click', triggerOpenFileDialog);
-    document.getElementById('btnAddKmlToolbar').addEventListener('click', triggerOpenFileDialog);
 
     // ==========================================
-    // 2. INICIALIZAÇÃO DO MAPA E CAMADAS (TILES)
+    // 2. INICIALIZAÇÃO DO MAPA + ROTAÇÃO COM 2 DEDOS + BOTÃO NORTE
     // ==========================================
     const map = L.map('map', {
       zoomControl: false,
       maxZoom: 21
     }).setView([-15.78, -47.93], 4);
 
+    // Controles de zoom e escala ficam no mapViewport para não girarem junto com o canvas do mapa
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
 
+    // Move os controles do Leaflet para o container fixo (mapViewport) para nunca saírem do lugar ao girar
+    const mapViewport = document.getElementById('mapViewport');
+    const mapEl = document.getElementById('map');
+    const controlContainer = mapEl.querySelector('.leaflet-control-container');
+    if (controlContainer) {
+      mapViewport.appendChild(controlContainer);
+    }
+
+    // Lógica de Rotação (Bearing) e Botão Norte
+    let currentBearing = 0; // em graus
+    const compassBtn = document.getElementById('btnResetNorth');
+
+    function normalizeAngle(deg) {
+      let a = deg % 360;
+      if (a > 180) a -= 360;
+      if (a <= -180) a += 360;
+      return a;
+    }
+
+    function setMapBearing(deg) {
+      currentBearing = normalizeAngle(deg);
+      // Se estiver muito próximo de 0° (Norte), trava em 0° e oculta o botão Norte
+      if (Math.abs(currentBearing) < 1.5) {
+        currentBearing = 0;
+        compassBtn.classList.remove('visible');
+      } else {
+        compassBtn.classList.add('visible');
+      }
+      mapEl.style.transform = `rotate(${currentBearing}deg)`;
+      document.documentElement.style.setProperty('--map-bearing', `${currentBearing}deg`);
+    }
+
+    compassBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      mapEl.style.transition = 'transform 0.3s cubic-bezier(0.22, 1, 0.36, 1)';
+      setMapBearing(0);
+      setTimeout(() => {
+        mapEl.style.transition = '';
+      }, 320);
+    });
+
+    // Gesto de Girar com 2 Dedos na Tela (Touch Rotation)
+    let touchStartAngle = null;
+    let bearingAtTouchStart = 0;
+    let isRotatingGesture = false;
+
+    function getTouchAngle(t1, t2) {
+      const dx = t2.clientX - t1.clientX;
+      const dy = t2.clientY - t1.clientY;
+      return Math.atan2(dy, dx) * (180 / Math.PI);
+    }
+
+    mapViewport.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 2) {
+        touchStartAngle = getTouchAngle(e.touches[0], e.touches[1]);
+        bearingAtTouchStart = currentBearing;
+        isRotatingGesture = false;
+      } else {
+        touchStartAngle = null;
+        isRotatingGesture = false;
+      }
+    }, { passive: true });
+
+    mapViewport.addEventListener('touchmove', (e) => {
+      if (e.touches.length === 2 && touchStartAngle !== null) {
+        const currentAngle = getTouchAngle(e.touches[0], e.touches[1]);
+        let delta = normalizeAngle(currentAngle - touchStartAngle);
+
+        // Limiar de 4 graus para iniciar a rotação sem atrapalhar o pinch-zoom puro
+        if (!isRotatingGesture && Math.abs(delta) > 4) {
+          isRotatingGesture = true;
+          touchStartAngle = currentAngle;
+          bearingAtTouchStart = currentBearing;
+          delta = 0;
+        }
+
+        if (isRotatingGesture) {
+          setMapBearing(bearingAtTouchStart + delta);
+        }
+      }
+    }, { passive: true });
+
+    mapViewport.addEventListener('touchend', (e) => {
+      if (e.touches.length < 2) {
+        touchStartAngle = null;
+        isRotatingGesture = false;
+      }
+    }, { passive: true });
+
+    // Suporte também para girar no PC segurando Alt + Shift + Arrastar com o mouse
+    let mouseRotateStartX = null;
+    let mouseStartBearing = 0;
+    mapViewport.addEventListener('mousedown', (e) => {
+      if ((e.altKey && e.shiftKey) || e.button === 1) {
+        mouseRotateStartX = e.clientX;
+        mouseStartBearing = currentBearing;
+        map.dragging.disable();
+      }
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (mouseRotateStartX !== null) {
+        const dx = e.clientX - mouseRotateStartX;
+        setMapBearing(mouseStartBearing + dx * 0.6);
+      }
+    });
+    window.addEventListener('mouseup', () => {
+      if (mouseRotateStartX !== null) {
+        mouseRotateStartX = null;
+        map.dragging.enable();
+      }
+    });
+
+    // ==========================================
+    // 2.2 CAMADAS DE SATÉLITE / MAPA (NAS CONFIGURAÇÕES DA SIDEBAR)
+    // ==========================================
     const layerConfigs = {
       hybrid: {
         name: 'Satélite + Ruas (Google)',
@@ -1483,20 +1695,27 @@
       tileLayers[key] = layer;
     });
 
-    let currentLayerKey = 'hybrid';
-    let currentBaseLayer = tileLayers.hybrid;
+    let currentLayerKey = localStorage.getItem('preferred_map_layer') || 'hybrid';
+    if (!tileLayers[currentLayerKey]) currentLayerKey = 'hybrid';
+    let currentBaseLayer = tileLayers[currentLayerKey];
     currentBaseLayer.addTo(map);
 
-    document.querySelectorAll('.layer-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        document.querySelectorAll('.layer-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    function syncLayerButtonsUI() {
+      document.querySelectorAll('.layer-option-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.layer === currentLayerKey);
+      });
+      document.getElementById('activeLayerName').textContent = layerConfigs[currentLayerKey].name;
+    }
+    syncLayerButtonsUI();
+
+    document.querySelectorAll('.layer-option-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
         currentLayerKey = btn.dataset.layer;
+        localStorage.setItem('preferred_map_layer', currentLayerKey);
         if (currentBaseLayer) map.removeLayer(currentBaseLayer);
         currentBaseLayer = tileLayers[currentLayerKey];
         currentBaseLayer.addTo(map);
-        document.getElementById('activeLayerName').textContent = layerConfigs[currentLayerKey].name;
+        syncLayerButtonsUI();
       });
     });
 
@@ -1514,10 +1733,29 @@
       '#f43f5e'  // Coral
     ];
 
-    let loadedDatasets = []; // [{ id, fileName, xmlText, color, visible, layerGroup, features }]
-    let activeDatasetFilter = 'all'; // 'all' ou dataset.id
-    let currentTypeFilter = 'all'; // 'all', 'point', 'line'
-    let showLabels = true;
+    let loadedDatasets = [];
+    let activeDatasetFilter = 'all';
+    let currentTypeFilter = 'all';
+    let showLabels = true; // Por padrão sempre mostra os números nos pontos
+
+    document.getElementById('chkShowPointLabels').addEventListener('change', (e) => {
+      showLabels = e.target.checked;
+      loadedDatasets.forEach(ds => {
+        ds.features.forEach(f => {
+          if (f.type === 'point') {
+            const shortLabel = f.name.length <= 4 ? f.name : '•';
+            const newIcon = L.divIcon({
+              className: 'custom-div-icon',
+              html: `<div class="kml-pin" style="width:26px;height:26px;background:${ds.color};">${showLabels ? shortLabel : ''}</div>`,
+              iconSize: [26, 26],
+              iconAnchor: [13, 13],
+              popupAnchor: [0, -13]
+            });
+            f.layer.setIcon(newIcon);
+          }
+        });
+      });
+    });
 
     function getAllVisibleBounds() {
       const group = L.featureGroup();
@@ -1539,9 +1777,7 @@
           visible: ds.visible
         }));
         localStorage.setItem('multi_kml_datasets_v1', JSON.stringify(serializable));
-      } catch (e) {
-        console.warn('Limite de localStorage atingido para múltiplos KMLs.');
-      }
+      } catch (e) {}
     }
 
     function kmlColorToHex(kmlColor, fallbackHex) {
@@ -1882,7 +2118,6 @@
       document.getElementById('loadedFilesCount').textContent = loadedDatasets.length;
       document.getElementById('btnClearAllKmls').style.display = loadedDatasets.length > 0 ? 'inline-flex' : 'none';
 
-      // Chips de arquivos KML carregados
       if (loadedDatasets.length > 1) {
         const allChip = document.createElement('div');
         allChip.className = `kml-file-chip ${activeDatasetFilter === 'all' ? 'active-filter' : ''}`;
@@ -1954,7 +2189,6 @@
         filesListEl.appendChild(chip);
       });
 
-      // Contadores de features
       let visibleFeatures = [];
       loadedDatasets.forEach(ds => {
         if (!ds.visible) return;
@@ -1984,8 +2218,8 @@
         emptyBox.innerHTML = `
           <div style="font-size: 38px;">📍</div>
           <h3>Nenhum arquivo KML aberto</h3>
-          <p>Clique no <b>ícone 📍 do topo</b>, no botão <b>"📂 Adicionar KML"</b> ou arraste vários arquivos <code>.kml</code> / <code>.kmz</code> para a tela.</p>
-          <p style="font-size:11px; color:#60a5fa;">Você pode abrir vários KMLs ao mesmo tempo — cada um recebe uma cor própria e fica separado aqui na barra esquerda.</p>
+          <p>Clique na <b>logo 📍 Abrir KML</b> no topo ou arraste seus arquivos <code>.kml</code> / <code>.kmz</code> para a tela.</p>
+          <p style="font-size:11px; color:#60a5fa;">Abra quantos KMLs quiser simultaneamente — você pode trocar o tipo de satélite e os rótulos em <b>⚙️ Configurações</b> logo acima.</p>
         `;
         emptyBox.addEventListener('click', triggerOpenFileDialog);
         listEl.appendChild(emptyBox);
@@ -2007,7 +2241,6 @@
 
         if (matchingFeatures.length === 0) return;
 
-        // Cabeçalho separador por arquivo KML
         const groupHeader = document.createElement('div');
         groupHeader.className = 'dataset-group-header';
         groupHeader.style.borderLeftColor = ds.color;
@@ -2242,9 +2475,7 @@
       updateDownloadEstimationUI();
     });
 
-    // ==========================================
-    // OTIMIZADOR DE DOWNLOAD: CÁLCULO INTELIGENTE POR GEOMETRIA + COMPRESSÃO WEBP
-    // ==========================================
+    // Otimizador de Download
     function collectGeometryAnchorCoords() {
       const anchors = [];
       loadedDatasets.forEach(ds => {
@@ -2255,7 +2486,6 @@
           } else if (f.layer && f.layer.getLatLngs) {
             const raw = f.layer.getLatLngs();
             const flat = raw.flat ? raw.flat(3) : [];
-            // Amostragem de vértices do contorno + interpolação para cobrir toda a linha
             for (let i = 0; i < flat.length; i++) {
               const pt = flat[i];
               if (pt && typeof pt.lat === 'number') {
@@ -2290,9 +2520,6 @@
       const tileSet = new Set();
 
       for (let z = minZ; z <= maxZ; z++) {
-        // Até o zoom 15 (visão geral da região), baixa o retângulo completo porque são pouquíssimos quadrantes
-        // A partir do zoom 16 (16, 17, 18, 19), se o modo Inteligente estiver ativo, baixa apenas os quadrantes
-        // num raio de margem ao redor de cada ponto GPS e do contorno do setor!
         if (!useSmart || z <= 15) {
           const xMin = lon2tile(nw.lng, z);
           const xMax = lon2tile(se.lng, z);
@@ -2306,7 +2533,6 @@
             }
           }
         } else {
-          // Raio de margem de segurança em quadrantes ao redor de cada ponto/contorno
           const pad = z === 16 ? 1 : (z === 17 ? 1 : 2);
           for (let i = 0; i < anchors.length; i++) {
             const [lat, lng] = anchors[i];
@@ -2331,7 +2557,6 @@
       try {
         const urls = buildOptimizedTileUrlList();
         const compress = document.getElementById('chkCompressWebp').checked;
-        // Média real: ~18KB por quadrante original, ou ~10KB com compressão WebP ativa
         const avgKB = compress ? 10.5 : 19.0;
         const estMB = ((urls.length * avgKB) / 1024).toFixed(1);
         badge.textContent = `~${urls.length.toLocaleString('pt-BR')} quadrantes (~${estMB} MB)`;
@@ -2344,14 +2569,13 @@
     document.getElementById('downloadZoomMode').addEventListener('change', updateDownloadEstimationUI);
     document.getElementById('chkCompressWebp').addEventListener('change', updateDownloadEstimationUI);
 
-    // Recomprime o Blob da imagem para WebP otimizado antes de gravar no Cache Storage
     async function optimizeTileResponse(resp, shouldCompress) {
       if (!shouldCompress || !resp || resp.type === 'opaque' || typeof OffscreenCanvas === 'undefined') {
         return resp;
       }
       try {
         const blob = await resp.clone().blob();
-        if (blob.size < 6000) return resp; // Já é muito pequeno
+        if (blob.size < 6000) return resp;
         const bmp = await createImageBitmap(blob);
         const canvas = new OffscreenCanvas(bmp.width, bmp.height);
         const ctx = canvas.getContext('2d');
@@ -2439,7 +2663,7 @@
     });
 
     // ==========================================
-    // 7. EVENTOS DE BUSCA, RÓTULOS E UPLOAD MÚLTIPLO
+    // 7. EVENTOS DE BUSCA E UPLOAD MÚLTIPLO
     // ==========================================
     document.getElementById('searchInput').addEventListener('input', renderSidebarItems);
 
@@ -2457,25 +2681,6 @@
       if (b) {
         map.fitBounds(b, { padding: [36, 36] });
       }
-    });
-
-    document.getElementById('btnToggleLabels').addEventListener('click', () => {
-      showLabels = !showLabels;
-      loadedDatasets.forEach(ds => {
-        ds.features.forEach(f => {
-          if (f.type === 'point') {
-            const shortLabel = f.name.length <= 4 ? f.name : '•';
-            const newIcon = L.divIcon({
-              className: 'custom-div-icon',
-              html: `<div class="kml-pin" style="width:26px;height:26px;background:${ds.color};">${showLabels ? shortLabel : ''}</div>`,
-              iconSize: [26, 26],
-              iconAnchor: [13, 13],
-              popupAnchor: [0, -13]
-            });
-            f.layer.setIcon(newIcon);
-          }
-        });
-      });
     });
 
     async function handleFilesLoad(fileList) {
