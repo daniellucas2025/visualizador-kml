@@ -1,0 +1,30 @@
+{
+  "name": "Visualizador Universal KML & GPS Offline",
+  "short_name": "KML Offline",
+  "description": "Leitor interativo de pontos GPS, rotas e contornos KML/KMZ com alto cache de mapa offline para trabalho em campo.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0f172a",
+  "theme_color": "#1e293b",
+  "categories": [
+    "navigation",
+    "utilities",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
