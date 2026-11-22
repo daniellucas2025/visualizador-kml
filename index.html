@@ -190,6 +190,7 @@
       position: relative;
       overflow: hidden;
       display: inline-block;
+      flex-shrink: 0;
     }
 
     .file-input-wrapper input[type=file] {
@@ -210,6 +211,7 @@
       padding: 6px 11px;
       border-radius: 8px;
       border: 1px solid var(--border);
+      flex-shrink: 0;
     }
 
     .stat-item {
@@ -500,13 +502,15 @@
       background: var(--bg-panel);
       border: 1px solid #475569;
       border-radius: 16px;
-      max-width: 480px;
+      max-width: 510px;
       width: 100%;
       padding: 20px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 13px;
+      max-height: 92vh;
+      overflow-y: auto;
     }
 
     .modal-header {
@@ -516,7 +520,7 @@
     }
 
     .modal-header h3 {
-      font-size: 16px;
+      font-size: 15.5px;
       font-weight: 700;
       display: flex;
       align-items: center;
@@ -538,8 +542,42 @@
       padding: 12px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 8px;
       font-size: 12.5px;
+    }
+
+    .auto-cache-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.12);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: #6ee7b7;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .ttl-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .ttl-input, .ttl-select {
+      background: #0f172a;
+      color: #fff;
+      border: 1px solid #334155;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12.5px;
+      outline: none;
+    }
+
+    .ttl-input:focus, .ttl-select:focus {
+      border-color: var(--accent);
     }
 
     .progress-bar-bg {
@@ -718,55 +756,102 @@
     <p style="color: #94a3b8;">O arquivo ficará salvo automaticamente no cache offline do seu aparelho</p>
   </div>
 
-  <!-- Modal de Download de Mapa Offline (Alto Cache) -->
+  <!-- Modal de Configuração de Cache e Mapa Offline -->
   <div class="modal-backdrop" id="offlineModal">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>📥 Mapa Offline & Alto Cache</h3>
+        <h3>⚙️ Mapa Offline & Tempo de Cache</h3>
         <button class="close-btn" id="btnCloseModal">✕</button>
       </div>
 
-      <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.45;">
-        Baixe antecipadamente todos os quadrantes da região do KML aberto (ou da área visível na tela) para trabalhar no campo <b>100% sem sinal de internet</b>.
-      </p>
+      <!-- Indicador de Salvamento Automático ao Navegar Online -->
+      <div class="auto-cache-badge">
+        <span style="font-size: 18px;">⚡</span>
+        <div>
+          <b>Salvamento Automático Ativo:</b> Tudo o que você navega e dá zoom no mapa enquanto está <b>online</b> é gravado automaticamente no aparelho para uso offline.
+        </div>
+      </div>
 
+      <!-- Configuração de Tempo para Apagar o Cache (TTL) -->
+      <div class="storage-box">
+        <label style="font-weight: 600; font-size: 12.5px; color: #f8fafc;">
+          ⏱️ Tempo para apagar o cache do mapa automaticamente:
+        </label>
+        <div class="ttl-row">
+          <select id="cacheTtlPreset" class="ttl-select" style="flex: 1;">
+            <option value="3600000">Após 1 Hora</option>
+            <option value="21600000">Após 6 Horas</option>
+            <option value="86400000">Após 24 Horas (1 Dia)</option>
+            <option value="259200000">Após 3 Dias</option>
+            <option value="604800000">Após 7 Dias (1 Semana)</option>
+            <option value="1296000000">Após 15 Dias</option>
+            <option value="2592000000" selected>Após 30 Dias (1 Mês)</option>
+            <option value="7776000000">Após 90 Dias (3 Meses)</option>
+            <option value="0">Nunca apagar automaticamente (Permanente)</option>
+            <option value="custom">Personalizado (escolher tempo exato)...</option>
+          </select>
+        </div>
+
+        <div class="ttl-row" id="customTtlWrap" style="display: none; margin-top: 4px;">
+          <input type="number" id="customTtlValue" class="ttl-input" min="1" value="10" style="width: 90px;" />
+          <select id="customTtlUnit" class="ttl-select" style="flex: 1;">
+            <option value="60000">Minutos</option>
+            <option value="3600000">Horas</option>
+            <option value="86400000" selected>Dias</option>
+          </select>
+          <button class="btn btn-primary" id="btnApplyCustomTtl" style="padding: 6px 12px;">Salvar Tempo</button>
+        </div>
+
+        <div style="font-size: 11px; color: var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+          <span id="ttlStatusDescription">Os mapas salvos expiram após 30 dias.</span>
+          <span style="color:#34d399;">*(Offline nunca apaga até voltar a ficar online)*</span>
+        </div>
+      </div>
+
+      <!-- Estatísticas do Cache Atual -->
       <div class="storage-box">
         <div style="display:flex; justify-content:space-between;">
-          <span>📦 Quadrantes salvos offline:</span>
+          <span>📦 Quadrantes salvos no aparelho:</span>
           <strong id="cachedTilesCount">Calculando...</strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span>💾 Cota de armazenamento do aparelho:</span>
+          <span>💾 Uso de armazenamento:</span>
           <strong id="storageQuotaInfo">Verificando...</strong>
         </div>
         <div style="display:flex; justify-content:space-between;">
-          <span>🗺️ Camada selecionada para baixar:</span>
+          <span>🗺️ Camada atual:</span>
           <strong id="activeLayerName" style="color:#60a5fa;">Satélite + Ruas</strong>
         </div>
       </div>
 
+      <!-- Pré-Download Completo da Região (Opcional) -->
       <div class="storage-box">
-        <label style="font-weight: 600; font-size: 12px;">Nível de Detalhe do Download:</label>
-        <select id="downloadZoomMode" style="background:#0f172a; color:#fff; border:1px solid #334155; padding:8px; border-radius:6px; font-size:12.5px;">
+        <label style="font-weight: 600; font-size: 12px; color:#f8fafc;">
+          📥 Pré-carregar toda a área do KML de uma só vez (Opcional):
+        </label>
+        <select id="downloadZoomMode" class="ttl-select">
           <option value="17">Rápido — Zoom 12 ao 17 (Visão Geral + Fazendas)</option>
           <option value="18" selected>Recomendado — Zoom 12 ao 18 (Alto Detalhe das Casas)</option>
           <option value="19">Máximo — Zoom 12 ao 19 (Zoom muito próximo / Mais pesado)</option>
         </select>
+
+        <div id="downloadProgressWrap" style="display:none; flex-direction:column; gap:6px; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; font-size:12px;">
+            <span id="downloadStatusText">Baixando quadrantes...</span>
+            <strong id="downloadPercentText">0%</strong>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="downloadProgressBar"></div>
+          </div>
+        </div>
       </div>
 
-      <div id="downloadProgressWrap" style="display:none; flex-direction:column; gap:6px;">
-        <div style="display:flex; justify-content:space-between; font-size:12px;">
-          <span id="downloadStatusText">Baixando quadrantes...</span>
-          <strong id="downloadPercentText">0%</strong>
+      <div style="display:flex; gap:8px; justify-content:space-between; flex-wrap:wrap; margin-top:2px;">
+        <div style="display:flex; gap:6px;">
+          <button class="btn" id="btnPruneExpired" title="Apagar apenas os quadrantes que já passaram do tempo configurado">🧹 Limpar Vencidos</button>
+          <button class="btn" id="btnClearCache" style="color:#fca5a5;">🗑️ Zerar Tudo</button>
         </div>
-        <div class="progress-bar-bg">
-          <div class="progress-bar-fill" id="downloadProgressBar"></div>
-        </div>
-      </div>
-
-      <div style="display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap; margin-top:4px;">
-        <button class="btn" id="btnClearCache" style="color:#fca5a5;">🗑️ Limpar Cache de Mapas</button>
-        <button class="btn btn-success" id="btnStartPreload">⬇️ Baixar Área para Offline</button>
+        <button class="btn btn-success" id="btnStartPreload">⬇️ Baixar Área Agora</button>
       </div>
     </div>
   </div>
@@ -778,9 +863,9 @@
       <div class="brand-text">
         <h1>
           Visualizador KML
-          <span class="status-pill" id="netStatusPill">● Online</span>
+          <span class="status-pill" id="netStatusPill">● Online (Auto-Cache)</span>
         </h1>
-        <p>Plataforma instalável com alto cache de mapas offline</p>
+        <p>Os mapas carregados online ficam salvos automaticamente no aparelho</p>
       </div>
     </div>
 
@@ -794,8 +879,8 @@
         📲 Instalar App
       </button>
 
-      <button class="btn btn-success" id="btnOpenOfflineModal" title="Baixar mapas da região para usar sem internet">
-        📥 Mapa Offline
+      <button class="btn btn-success" id="btnOpenOfflineModal" title="Configurar tempo de cache e baixar mapas para uso sem internet">
+        📥 Mapa Offline (<span id="headerTileCount">0</span>)
       </button>
 
       <button class="btn" id="btnMyLocation" title="Mostrar minha posição GPS atual no mapa">
@@ -860,10 +945,82 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     // ==========================================
-    // 0. REGISTRO DO SERVICE WORKER (PWA + CACHE ALTO)
+    // 0. BANCO INDEXEDDB + SERVICE WORKER (AUTO-CACHE & TTL)
     // ==========================================
-    const TILE_CACHE_NAME = 'kml-map-tiles-v2';
+    const TILE_CACHE_NAME = 'kml-map-tiles-v3';
+    const IDB_NAME = 'kml_offline_cache_db';
+    const IDB_STORE = 'tile_meta';
+    const IDB_CONFIG = 'cache_config';
     let deferredInstallPrompt = null;
+
+    function openCacheDB() {
+      return new Promise((resolve, reject) => {
+        const req = indexedDB.open(IDB_NAME, 1);
+        req.onupgradeneeded = (e) => {
+          const db = e.target.result;
+          if (!db.objectStoreNames.contains(IDB_STORE)) {
+            const store = db.createObjectStore(IDB_STORE, { keyPath: 'url' });
+            store.createIndex('ts', 'ts', { unique: false });
+          }
+          if (!db.objectStoreNames.contains(IDB_CONFIG)) {
+            db.createObjectStore(IDB_CONFIG, { keyPath: 'key' });
+          }
+        };
+        req.onsuccess = () => resolve(req.result);
+        req.onerror = () => reject(req.error);
+      });
+    }
+
+    async function saveTTLToDB(ttlMs) {
+      try {
+        const db = await openCacheDB();
+        const tx = db.transaction(IDB_CONFIG, 'readwrite');
+        tx.objectStore(IDB_CONFIG).put({ key: 'ttl_ms', value: Number(ttlMs) });
+        localStorage.setItem('cache_ttl_ms', String(ttlMs));
+      } catch (e) {
+        console.warn(e);
+      }
+    }
+
+    async function recordTileTimestampInDB(url) {
+      try {
+        const db = await openCacheDB();
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).put({ url, ts: Date.now() });
+      } catch (e) {}
+    }
+
+    async function clearAllTileTimestampsInDB() {
+      try {
+        const db = await openCacheDB();
+        const tx = db.transaction(IDB_STORE, 'readwrite');
+        tx.objectStore(IDB_STORE).clear();
+      } catch (e) {}
+    }
+
+    function formatTTLHuman(ttlMs) {
+      const ms = Number(ttlMs);
+      if (ms === 0) return 'Os mapas salvos nunca são apagados automaticamente.';
+      const minutes = Math.round(ms / 60000);
+      if (minutes < 60) return `O cache do mapa é apagado automaticamente após ${minutes} minuto(s).`;
+      const hours = Math.round(ms / 3600000);
+      if (hours < 24) return `O cache do mapa é apagado automaticamente após ${hours} hora(s).`;
+      const days = Math.round(ms / 86400000);
+      return `O cache do mapa é apagado automaticamente após ${days} dia(s).`;
+    }
+
+    function requestServiceWorkerPrune() {
+      return new Promise((resolve) => {
+        if (!navigator.serviceWorker || !navigator.serviceWorker.controller) {
+          resolve({ removed: 0 });
+          return;
+        }
+        const channel = new MessageChannel();
+        channel.port1.onmessage = (e) => resolve(e.data || { removed: 0 });
+        navigator.serviceWorker.controller.postMessage({ type: 'PRUNE_EXPIRED' }, [channel.port2]);
+        setTimeout(() => resolve({ removed: 0 }), 3000);
+      });
+    }
 
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
@@ -872,6 +1029,15 @@
           if (navigator.storage && navigator.storage.persist) {
             await navigator.storage.persist();
           }
+          // Sincroniza o TTL salvo com o IndexedDB
+          const savedTtl = localStorage.getItem('cache_ttl_ms');
+          if (savedTtl !== null) {
+            await saveTTLToDB(Number(savedTtl));
+          } else {
+            await saveTTLToDB(2592000000); // 30 dias padrão
+          }
+          await requestServiceWorkerPrune();
+          refreshStorageStats();
         } catch (err) {
           console.warn('Service Worker aviso:', err);
         }
@@ -900,7 +1066,7 @@
     function updateNetworkBadge() {
       const pill = document.getElementById('netStatusPill');
       if (navigator.onLine) {
-        pill.textContent = '● Online';
+        pill.textContent = '● Online (Auto-Cache)';
         pill.classList.remove('offline');
       } else {
         pill.textContent = '⚡ Modo Offline (Cache)';
@@ -917,7 +1083,7 @@
     const map = L.map('map', {
       zoomControl: false,
       maxZoom: 21
-    }).setView([-15.78, -47.93], 4); // Visão inicial do Brasil
+    }).setView([-15.78, -47.93], 4);
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
@@ -952,11 +1118,16 @@
 
     const tileLayers = {};
     Object.keys(layerConfigs).forEach(key => {
-      tileLayers[key] = L.tileLayer(layerConfigs[key].url, {
+      const layer = L.tileLayer(layerConfigs[key].url, {
         maxZoom: layerConfigs[key].maxZoom,
         referrerPolicy: 'origin',
         attribution: layerConfigs[key].name
       });
+      // Ao carregar quadrantes online durante a navegação, atualiza contador do cache
+      layer.on('tileload', () => {
+        scheduleCacheCountUpdate();
+      });
+      tileLayers[key] = layer;
     });
 
     let currentLayerKey = 'hybrid';
@@ -1025,8 +1196,14 @@
     });
 
     // ==========================================
-    // 3. SISTEMA DE PRÉ-DOWNLOAD DE MAPA OFFLINE
+    // 3. GERENCIADOR DE CACHE + CONFIGURAÇÃO DE EXPIRAÇÃO (TTL)
     // ==========================================
+    let cacheCountTimer = null;
+    function scheduleCacheCountUpdate() {
+      if (cacheCountTimer) clearTimeout(cacheCountTimer);
+      cacheCountTimer = setTimeout(refreshStorageStats, 1200);
+    }
+
     function lon2tile(lon, zoom) {
       return Math.floor(((lon + 180) / 360) * Math.pow(2, zoom));
     }
@@ -1043,6 +1220,7 @@
           const cache = await caches.open(TILE_CACHE_NAME);
           const keys = await cache.keys();
           document.getElementById('cachedTilesCount').textContent = `${keys.length.toLocaleString('pt-BR')} quadrantes`;
+          document.getElementById('headerTileCount').textContent = keys.length.toLocaleString('pt-BR');
         }
         if (navigator.storage && navigator.storage.estimate) {
           const est = await navigator.storage.estimate();
@@ -1055,9 +1233,69 @@
       }
     }
 
+    // Inicializar UI de configuração de TTL
+    const ttlPresetSelect = document.getElementById('cacheTtlPreset');
+    const customTtlWrap = document.getElementById('customTtlWrap');
+    const ttlStatusDescription = document.getElementById('ttlStatusDescription');
+
+    function loadSavedTTLIntoUI() {
+      const saved = localStorage.getItem('cache_ttl_ms');
+      const ttlMs = saved !== null ? Number(saved) : 2592000000;
+      const optionExists = Array.from(ttlPresetSelect.options).some(o => o.value === String(ttlMs));
+      if (optionExists) {
+        ttlPresetSelect.value = String(ttlMs);
+        customTtlWrap.style.display = 'none';
+      } else {
+        ttlPresetSelect.value = 'custom';
+        customTtlWrap.style.display = 'flex';
+        if (ttlMs % 86400000 === 0) {
+          document.getElementById('customTtlValue').value = ttlMs / 86400000;
+          document.getElementById('customTtlUnit').value = '86400000';
+        } else if (ttlMs % 3600000 === 0) {
+          document.getElementById('customTtlValue').value = ttlMs / 3600000;
+          document.getElementById('customTtlUnit').value = '3600000';
+        } else {
+          document.getElementById('customTtlValue').value = Math.max(1, Math.round(ttlMs / 60000));
+          document.getElementById('customTtlUnit').value = '60000';
+        }
+      }
+      ttlStatusDescription.textContent = formatTTLHuman(ttlMs);
+    }
+
+    ttlPresetSelect.addEventListener('change', async () => {
+      const val = ttlPresetSelect.value;
+      if (val === 'custom') {
+        customTtlWrap.style.display = 'flex';
+        return;
+      }
+      customTtlWrap.style.display = 'none';
+      const ttlMs = Number(val);
+      await saveTTLToDB(ttlMs);
+      ttlStatusDescription.textContent = formatTTLHuman(ttlMs);
+      await requestServiceWorkerPrune();
+      await refreshStorageStats();
+    });
+
+    document.getElementById('btnApplyCustomTtl').addEventListener('click', async () => {
+      const count = Math.max(1, Number(document.getElementById('customTtlValue').value) || 1);
+      const unitMs = Number(document.getElementById('customTtlUnit').value);
+      const ttlMs = count * unitMs;
+      await saveTTLToDB(ttlMs);
+      ttlStatusDescription.textContent = formatTTLHuman(ttlMs);
+      await requestServiceWorkerPrune();
+      await refreshStorageStats();
+    });
+
+    document.getElementById('btnPruneExpired').addEventListener('click', async () => {
+      const res = await requestServiceWorkerPrune();
+      await refreshStorageStats();
+      alert(`Limpeza concluída! ${res.removed || 0} quadrante(s) vencido(s) foram removidos.`);
+    });
+
     const offlineModal = document.getElementById('offlineModal');
     document.getElementById('btnOpenOfflineModal').addEventListener('click', () => {
       document.getElementById('activeLayerName').textContent = layerConfigs[currentLayerKey].name;
+      loadSavedTTLIntoUI();
       refreshStorageStats();
       offlineModal.classList.add('active');
     });
@@ -1066,8 +1304,9 @@
     });
 
     document.getElementById('btnClearCache').addEventListener('click', async () => {
-      if (!confirm('Deseja apagar todos os quadrantes de mapa salvos offline?')) return;
+      if (!confirm('Deseja apagar imediatamente TODOS os quadrantes de mapa salvos offline?')) return;
       await caches.delete(TILE_CACHE_NAME);
+      await clearAllTileTimestampsInDB();
       await refreshStorageStats();
     });
 
@@ -1131,6 +1370,7 @@
               const resp = await fetch(url, { mode: 'cors', credentials: 'omit' }).catch(() => fetch(url, { mode: 'no-cors' }));
               if (resp && (resp.status === 200 || resp.type === 'opaque')) {
                 await cache.put(url, resp);
+                recordTileTimestampInDB(url);
               }
             }
           } catch (e) {}
@@ -1153,7 +1393,7 @@
 
       statusTxt.textContent = `✅ Concluído! ${total.toLocaleString('pt-BR')} quadrantes disponíveis offline.`;
       btnStart.disabled = false;
-      btnStart.textContent = '⬇️ Baixar Área para Offline';
+      btnStart.textContent = '⬇️ Baixar Área Agora';
       isDownloadingTiles = false;
       await refreshStorageStats();
     });
@@ -1458,7 +1698,7 @@
             <div style="font-size: 36px;">📂</div>
             <h3>Nenhum arquivo KML aberto</h3>
             <p>Clique em <b>"📂 Abrir KML / KMZ"</b> no topo ou arraste seu arquivo para qualquer lugar da tela.</p>
-            <p style="font-size:11px; color:#60a5fa;">O último arquivo aberto fica salvo automaticamente no seu aparelho para uso offline.</p>
+            <p style="font-size:11px; color:#60a5fa;">Enquanto você navega online pelo mapa, todos os quadrantes visitados ficam salvos automaticamente no cache pelo tempo que você configurar.</p>
           </div>
         `;
         return;
@@ -1628,6 +1868,7 @@
       } else {
         updateStatsAndList();
       }
+      refreshStorageStats();
     });
   </script>
 </body>

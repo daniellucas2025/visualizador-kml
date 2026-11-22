@@ -1,6 +1,8 @@
-const APP_CACHE = 'kml-app-shell-v2';
-const TILE_CACHE = 'kml-map-tiles-v2';
-const MAX_TILES = 30000; // Capacidade para até 30.000 quadrantes de mapa (~600MB a 1.2GB de mapas offline)
+const APP_CACHE = 'kml-app-shell-v3';
+const TILE_CACHE = 'kml-map-tiles-v3';
+const IDB_NAME = 'kml_offline_cache_db';
+const IDB_STORE = 'tile_meta';
+const IDB_CONFIG = 'cache_config';
 
 const APP_ASSETS = [
   './',
@@ -13,13 +15,117 @@ const APP_ASSETS = [
   'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js'
 ];
 
+// ---- IndexedDB Helpers for Tile Timestamps & TTL Config ----
+function openCacheDB() {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1);
+    req.onupgradeneeded = (e) => {
+      const db = e.target.result;
+      if (!db.objectStoreNames.contains(IDB_STORE)) {
+        const store = db.createObjectStore(IDB_STORE, { keyPath: 'url' });
+        store.createIndex('ts', 'ts', { unique: false });
+      }
+      if (!db.objectStoreNames.contains(IDB_CONFIG)) {
+        db.createObjectStore(IDB_CONFIG, { keyPath: 'key' });
+      }
+    };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function recordTileTimestamp(url) {
+  try {
+    const db = await openCacheDB();
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).put({ url, ts: Date.now() });
+  } catch (e) {}
+}
+
+async function getTileTimestamp(url) {
+  try {
+    const db = await openCacheDB();
+    return await new Promise((resolve) => {
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const req = tx.objectStore(IDB_STORE).get(url);
+      req.onsuccess = () => resolve(req.result ? req.result.ts : null);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) {
+    return null;
+  }
+}
+
+async function deleteTileMeta(url) {
+  try {
+    const db = await openCacheDB();
+    const tx = db.transaction(IDB_STORE, 'readwrite');
+    tx.objectStore(IDB_STORE).delete(url);
+  } catch (e) {}
+}
+
+async function getConfiguredTTLMs() {
+  try {
+    const db = await openCacheDB();
+    return await new Promise((resolve) => {
+      const tx = db.transaction(IDB_CONFIG, 'readonly');
+      const req = tx.objectStore(IDB_CONFIG).get('ttl_ms');
+      req.onsuccess = () => {
+        // Default: 30 days in ms (0 = never expire)
+        const val = req.result ? req.result.value : 30 * 24 * 60 * 60 * 1000;
+        resolve(val);
+      };
+      req.onerror = () => resolve(30 * 24 * 60 * 60 * 1000);
+    });
+  } catch (e) {
+    return 30 * 24 * 60 * 60 * 1000;
+  }
+}
+
+async function pruneExpiredTiles() {
+  try {
+    const ttlMs = await getConfiguredTTLMs();
+    if (!ttlMs || ttlMs <= 0) return { removed: 0 }; // 0 = Nunca apagar automaticamente
+
+    const cutoff = Date.now() - ttlMs;
+    const db = await openCacheDB();
+    const cache = await caches.open(TILE_CACHE);
+
+    const expiredUrls = await new Promise((resolve) => {
+      const list = [];
+      const tx = db.transaction(IDB_STORE, 'readonly');
+      const store = tx.objectStore(IDB_STORE);
+      const idx = store.index('ts');
+      const range = IDBKeyRange.upperBound(cutoff);
+      const cursorReq = idx.openCursor(range);
+
+      cursorReq.onsuccess = (e) => {
+        const cursor = e.target.result;
+        if (cursor) {
+          list.push(cursor.value.url);
+          cursor.continue();
+        } else {
+          resolve(list);
+        }
+      };
+      cursorReq.onerror = () => resolve(list);
+    });
+
+    for (const url of expiredUrls) {
+      await cache.delete(url, { ignoreVary: true });
+      await deleteTileMeta(url);
+    }
+    return { removed: expiredUrls.length };
+  } catch (e) {
+    return { removed: 0 };
+  }
+}
+
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
     caches.open(APP_CACHE).then((cache) => {
-      return cache.addAll(APP_ASSETS).catch((err) => {
-        console.warn('Alguns assets iniciais falharam no pré-cache:', err);
-      });
+      return cache.addAll(APP_ASSETS).catch(() => {});
     })
   );
 });
@@ -34,8 +140,20 @@ self.addEventListener('activate', (event) => {
           }
         })
       )
-    ).then(() => self.clients.claim())
+    ).then(() => pruneExpiredTiles())
+     .then(() => self.clients.claim())
   );
+});
+
+self.addEventListener('message', (event) => {
+  if (!event.data) return;
+  if (event.data.type === 'PRUNE_EXPIRED') {
+    pruneExpiredTiles().then((res) => {
+      if (event.ports && event.ports[0]) {
+        event.ports[0].postMessage(res);
+      }
+    });
+  }
 });
 
 function isMapTileRequest(urlStr) {
@@ -55,22 +173,36 @@ self.addEventListener('fetch', (event) => {
 
   const urlStr = req.url;
 
-  // Estratégia Cache-First para Quadrantes do Mapa (Tiles) com atualização inteligente
   if (isMapTileRequest(urlStr)) {
     event.respondWith(
       caches.open(TILE_CACHE).then(async (cache) => {
         const cachedResp = await cache.match(req, { ignoreVary: true });
+        const ttlMs = await getConfiguredTTLMs();
+
         if (cachedResp) {
-          return cachedResp;
+          // Se estiver sem internet (offline), sempre entrega o cache mesmo se já venceu o tempo!
+          if (!navigator.onLine || !ttlMs || ttlMs <= 0) {
+            return cachedResp;
+          }
+          // Se estiver online, verifica se o tile já passou do tempo configurado para expirar
+          const savedTs = await getTileTimestamp(urlStr);
+          const isExpired = savedTs && (Date.now() - savedTs > ttlMs);
+          if (!isExpired) {
+            return cachedResp;
+          }
+          // Se expirou e está online, tenta baixar uma versão nova abaixo
         }
+
         try {
           const netResp = await fetch(req);
           if (netResp && (netResp.status === 200 || netResp.type === 'opaque')) {
             cache.put(req, netResp.clone());
+            recordTileTimestamp(urlStr);
           }
           return netResp;
         } catch (err) {
-          // Sem internet e tile não estava em cache
+          // Se falhou a rede mas tínhamos um cache antigo, retorna ele para não deixar o usuário na mão
+          if (cachedResp) return cachedResp;
           return new Response('', { status: 408, statusText: 'Offline Tile Miss' });
         }
       })
@@ -78,7 +210,7 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Estratégia Network-First com Fallback imediato para Cache nos arquivos do App
+  // App shell requests
   event.respondWith(
     fetch(req)
       .then((netResp) => {
