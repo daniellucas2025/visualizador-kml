@@ -52,41 +52,43 @@
     }
 
     /* ==========================================
-       HEADER / BARRA DO TOPO LIMPA E FLUIDA
+       HEADER / BARRA DO TOPO (100% VISÍVEL NO CELULAR)
        ========================================== */
     header {
       background-color: var(--bg-panel);
       border-bottom: 1px solid var(--border);
-      padding: 7px 12px;
+      padding: 6px 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
+      gap: 6px;
       z-index: 1100;
       flex-shrink: 0;
+      width: 100%;
     }
 
     .header-left {
       display: flex;
       align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
+      gap: 6px;
+      min-width: 0;
     }
 
     .sidebar-toggle-btn {
       background: var(--bg-card);
       border: 1px solid var(--border);
       color: var(--text-main);
-      height: 36px;
-      padding: 0 11px;
-      border-radius: 9px;
+      height: 34px;
+      padding: 0 9px;
+      border-radius: 8px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
-      font-size: 13px;
+      gap: 5px;
+      font-size: 12.5px;
       font-weight: 600;
       transition: all 0.15s;
+      flex-shrink: 0;
     }
 
     .sidebar-toggle-btn:hover {
@@ -106,14 +108,15 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 7px;
       cursor: pointer;
-      padding: 3px 10px 3px 4px;
-      border-radius: 10px;
-      border: 1px solid rgba(59, 130, 246, 0.25);
-      background: rgba(59, 130, 246, 0.08);
+      padding: 2px 8px 2px 3px;
+      border-radius: 9px;
+      border: 1px solid rgba(59, 130, 246, 0.28);
+      background: rgba(59, 130, 246, 0.09);
       transition: all 0.15s ease;
       user-select: none;
+      min-width: 0;
     }
 
     .brand:hover {
@@ -126,15 +129,15 @@
     }
 
     .brand-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 17px;
-      box-shadow: 0 3px 10px rgba(59, 130, 246, 0.35);
+      font-size: 16px;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.35);
       position: relative;
       flex-shrink: 0;
     }
@@ -144,11 +147,11 @@
       position: absolute;
       bottom: -3px;
       right: -3px;
-      width: 15px;
-      height: 15px;
+      width: 14px;
+      height: 14px;
       background: #10b981;
       color: #fff;
-      font-size: 11px;
+      font-size: 10.5px;
       font-weight: 800;
       border-radius: 50%;
       display: flex;
@@ -157,49 +160,46 @@
       border: 2px solid var(--bg-panel);
     }
 
+    .brand-text {
+      min-width: 0;
+    }
+
     .brand-text h1 {
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: -0.02em;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       white-space: nowrap;
     }
 
     .brand-text p {
-      font-size: 10.5px;
+      font-size: 10px;
       color: #93c5fd;
       white-space: nowrap;
     }
 
-    .status-pill {
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 99px;
-      font-weight: 600;
-      background: rgba(16, 185, 129, 0.15);
-      color: #34d399;
-      border: 1px solid rgba(16, 185, 129, 0.3);
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      display: inline-block;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.8);
+      flex-shrink: 0;
     }
 
-    .status-pill.offline {
-      background: rgba(245, 158, 11, 0.18);
-      color: #fbbf24;
-      border-color: rgba(245, 158, 11, 0.4);
+    .status-dot.offline {
+      background: #f59e0b;
+      box-shadow: 0 0 6px rgba(245, 158, 11, 0.8);
     }
 
     .toolbar {
       display: flex;
       align-items: center;
-      gap: 6px;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-
-    .toolbar::-webkit-scrollbar {
-      display: none;
+      gap: 5px;
+      flex-shrink: 0;
     }
 
     .btn {
@@ -207,10 +207,10 @@
       color: var(--text-main);
       border: 1px solid var(--border);
       height: 34px;
-      padding: 0 11px;
+      padding: 0 10px;
       border-radius: 8px;
       font-size: 12px;
-      font-weight: 500;
+      font-weight: 600;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
@@ -375,7 +375,7 @@
       align-items: center;
       justify-content: space-between;
       gap: 8px;
-      padding-top: 4px;
+      padding-top: 6px;
       border-top: 1px solid rgba(51, 65, 85, 0.6);
       color: #cbd5e1;
       font-size: 12px;
@@ -534,30 +534,6 @@
       font-size: 13px;
     }
 
-    .filter-tabs {
-      display: flex;
-      gap: 5px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      background: var(--bg-dark);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 6px 4px;
-      border-radius: 6px;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .tab-btn.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-    }
-
     /* Lista de Pontos Agrupados */
     .items-list {
       flex: 1;
@@ -708,7 +684,7 @@
     }
 
     /* ==========================================
-       VIEWPORT DO MAPA & ROTAÇÃO COM 2 DEDOS
+       VIEWPORT DO MAPA & ROTAÇÃO COM 2 DEDOS (SEM BORDAS PRETAS)
        ========================================== */
     .map-viewport {
       flex: 1;
@@ -720,13 +696,14 @@
       touch-action: none;
     }
 
-    /* Superfície rotacionável expandida para não mostrar cantos vazios ao girar */
+    /* O tamanho de #map é ajustado dinamicamente via JS para a diagonal exata da tela (Math.hypot),
+       garantindo que em qualquer ângulo de 0° a 360° nunca apareçam cantos pretos! */
     #map {
       position: absolute;
-      width: 145%;
-      height: 145%;
-      left: -22.5%;
-      top: -22.5%;
+      width: 180%;
+      height: 180%;
+      left: -40%;
+      top: -40%;
       background: #0b1120;
       transform-origin: 50% 50%;
       will-change: transform;
@@ -740,11 +717,11 @@
     }
 
     /* ==========================================
-       BOTÕES FLUTUANTES DO MAPA (BÚSSOLA NORTE & GPS)
+       BOTÕES FLUTUANTES DO MAPA (BÚSSOLA NORTE & GPS MAIS ACIMA DO ZOOM)
        ========================================== */
     .gmaps-compass-btn {
       position: absolute;
-      bottom: 142px;
+      bottom: 162px;
       right: 10px;
       z-index: 850;
       width: 42px;
@@ -782,9 +759,10 @@
       transform: rotate(var(--map-bearing, 0deg));
     }
 
+    /* Movido mais para cima dos botões de zoom conforme solicitado */
     .gmaps-locate-btn {
       position: absolute;
-      bottom: 92px;
+      bottom: 112px;
       right: 10px;
       z-index: 850;
       width: 42px;
@@ -828,26 +806,48 @@
     }
 
     /* ==========================================
-       RESPONSIVIDADE MOBILE (CELULAR)
+       RESPONSIVIDADE MOBILE (TODOS OS BOTÕES DO TOPO 100% VISÍVEIS)
        ========================================== */
     @media (max-width: 768px) {
       header {
-        padding: 6px 8px;
-        gap: 6px;
+        padding: 5px 8px;
+        gap: 5px;
       }
 
       .brand-text p {
         display: none;
       }
 
-      .btn .btn-label-desktop {
+      .btn-label-desktop {
         display: none;
       }
 
-      .btn {
-        padding: 0 10px;
-        height: 34px;
+      .sidebar-toggle-btn {
+        height: 32px;
+        padding: 0 8px;
         font-size: 12px;
+      }
+
+      .brand {
+        padding: 2px 7px 2px 2px;
+        gap: 5px;
+      }
+
+      .brand-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
+      }
+
+      .brand-text h1 {
+        font-size: 12px;
+      }
+
+      .btn {
+        padding: 0 8px;
+        height: 32px;
+        font-size: 11.5px;
+        gap: 3px;
       }
 
       /* Sidebar Esquerda Gaveta (Drawer) no Celular */
@@ -1218,13 +1218,13 @@
     </div>
   </div>
 
-  <!-- Header Limpo e Fluido -->
+  <!-- Header Compacto (100% dos botões visíveis no celular e PC) -->
   <header>
     <div class="header-left">
-      <!-- Botão para abrir/fechar a Sidebar Esquerda -->
+      <!-- Botão para abrir/fechar a Sidebar Esquerda (Mostra APENAS a contagem de coordenadas/pontos, desconsiderando o contorno) -->
       <button class="sidebar-toggle-btn" id="btnToggleSidebar" title="Abrir/Fechar Painel Lateral Esquerdo">
         <span>☰</span>
-        <span class="btn-label-desktop">Painel</span>
+        <span class="btn-label-desktop">Pontos</span>
         <span class="sidebar-count-pill" id="totalItemsPill">0</span>
       </button>
 
@@ -1234,7 +1234,7 @@
         <div class="brand-text">
           <h1>
             <span>Abrir KML</span>
-            <span class="status-pill" id="netStatusPill">● Online</span>
+            <span class="status-dot" id="netStatusDot" title="Online (Auto-Cache Ativo)"></span>
           </h1>
           <p>Toque na logo para adicionar KML / KMZ</p>
         </div>
@@ -1250,7 +1250,7 @@
         🎯 <span class="btn-label-desktop">Enquadrar</span>
       </button>
 
-      <button class="btn btn-warning" id="btnInstallPWA" style="display:none;">
+      <button class="btn btn-warning" id="btnInstallPWA" style="display:none;" title="Instalar aplicativo no celular">
         📲 <span class="btn-label-desktop">Instalar</span>
       </button>
     </div>
@@ -1285,6 +1285,11 @@
               <input type="checkbox" id="chkShowPointLabels" checked style="accent-color:#3b82f6; width:16px; height:16px;" />
             </label>
 
+            <label class="setting-switch-row" style="cursor:pointer;">
+              <span>📐 Desenhar linha de contorno no mapa</span>
+              <input type="checkbox" id="chkShowContours" checked style="accent-color:#3b82f6; width:16px; height:16px;" />
+            </label>
+
             <div style="font-size:11px; color:var(--text-muted); line-height:1.35;">
               💡 <b>Dica:</b> Gire o mapa com <b>2 dedos</b> na tela (ou segure <code>Alt + Shift + Arrastar</code> no mouse).
             </div>
@@ -1293,7 +1298,7 @@
 
         <!-- 2. Lista de Arquivos KML Carregados -->
         <div class="sidebar-title-row">
-          <h2>🗂️ Arquivos KML (<span id="loadedFilesCount">0</span>)</h2>
+          <h2>🗂️ Arquivos KML (<span id="loadedFilesCount">0</span>) — <span id="totalPointsHeaderCount">0</span> Pontos</h2>
           <div style="display:flex; gap:4px; align-items:center;">
             <button class="btn" id="btnClearAllKmls" style="height:26px; padding:0 8px; font-size:11px; display:none; color:#fca5a5;">Limpar Todos</button>
             <button class="close-sidebar-mobile" id="btnCloseSidebarMobile" title="Fechar painel">✕</button>
@@ -1302,16 +1307,10 @@
 
         <div class="kml-files-section" id="kmlFilesList"></div>
 
-        <!-- 3. Busca e Filtros -->
+        <!-- 3. Busca de Coordenadas / Pontos (Sem incluir o contorno na contagem) -->
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" placeholder="Buscar ponto, fazenda, responsável, arquivo..." />
-        </div>
-
-        <div class="filter-tabs">
-          <button class="tab-btn active" data-filter="all">Todos (<span id="tabAllCount">0</span>)</button>
-          <button class="tab-btn" data-filter="point">Pontos (<span id="tabPointCount">0</span>)</button>
-          <button class="tab-btn" data-filter="line">Contornos (<span id="tabLineCount">0</span>)</button>
+          <input type="text" id="searchInput" placeholder="Buscar ponto, fazenda, responsável, código..." />
         </div>
       </div>
 
@@ -1319,7 +1318,7 @@
       <div class="items-list" id="itemsList"></div>
     </aside>
 
-    <!-- Map Viewport (Suporta Rotação com 2 Dedos) -->
+    <!-- Map Viewport (Suporta Rotação com 2 Dedos sem bordas pretas) -->
     <div class="map-viewport" id="mapViewport">
       <div id="map"></div>
 
@@ -1327,16 +1326,14 @@
       <button class="gmaps-compass-btn" id="btnResetNorth" title="Apontar mapa para o Norte (0°)">
         <div class="compass-needle-wrap">
           <svg width="24" height="24" viewBox="0 0 24 24">
-            <!-- Ponta Norte Vermelha -->
             <polygon points="12,2 16,12 8,12" fill="#ef4444" />
-            <!-- Ponta Sul Branca/Cinza -->
             <polygon points="12,22 16,12 8,12" fill="#cbd5e1" />
             <circle cx="12" cy="12" r="2" fill="#0f172a" />
           </svg>
         </div>
       </button>
 
-      <!-- Botão de Localização Estilo Google Maps (Acima do Zoom) -->
+      <!-- Botão de Localização Estilo Google Maps (Mais acima dos botões de Zoom) -->
       <button class="gmaps-locate-btn" id="btnMyLocation" title="Minha localização GPS atual">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
           <circle cx="12" cy="12" r="7"></circle>
@@ -1468,13 +1465,13 @@
     });
 
     function updateNetworkBadge() {
-      const pill = document.getElementById('netStatusPill');
+      const dot = document.getElementById('netStatusDot');
       if (navigator.onLine) {
-        pill.textContent = '● Online';
-        pill.classList.remove('offline');
+        dot.classList.remove('offline');
+        dot.title = 'Online (Auto-Cache Ativo)';
       } else {
-        pill.textContent = '⚡ Offline';
-        pill.classList.add('offline');
+        dot.classList.add('offline');
+        dot.title = 'Modo Offline (Usando Cache)';
       }
     }
     window.addEventListener('online', updateNetworkBadge);
@@ -1496,13 +1493,13 @@
       if (isMobileViewport()) {
         sidebarBackdrop.classList.add('active');
       }
-      setTimeout(() => map.invalidateSize(), 260);
+      setTimeout(() => resizeRotatableMapCanvas(), 260);
     }
 
     function closeSidebar() {
       leftSidebar.classList.add('collapsed');
       sidebarBackdrop.classList.remove('active');
-      setTimeout(() => map.invalidateSize(), 260);
+      setTimeout(() => resizeRotatableMapCanvas(), 260);
     }
 
     function toggleSidebar() {
@@ -1530,27 +1527,43 @@
     document.getElementById('brandOpenKml').addEventListener('click', triggerOpenFileDialog);
 
     // ==========================================
-    // 2. INICIALIZAÇÃO DO MAPA + ROTAÇÃO COM 2 DEDOS + BOTÃO NORTE
+    // 2. INICIALIZAÇÃO DO MAPA + ROTAÇÃO COM 2 DEDOS SEM BORDAS PRETAS
     // ==========================================
+    const mapViewport = document.getElementById('mapViewport');
+    const mapEl = document.getElementById('map');
+
     const map = L.map('map', {
       zoomControl: false,
       maxZoom: 21
     }).setView([-15.78, -47.93], 4);
 
-    // Controles de zoom e escala ficam no mapViewport para não girarem junto com o canvas do mapa
     L.control.zoom({ position: 'bottomright' }).addTo(map);
     L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
 
-    // Move os controles do Leaflet para o container fixo (mapViewport) para nunca saírem do lugar ao girar
-    const mapViewport = document.getElementById('mapViewport');
-    const mapEl = document.getElementById('map');
+    // Move os controles do Leaflet para o container fixo (mapViewport) para nunca girarem junto
     const controlContainer = mapEl.querySelector('.leaflet-control-container');
     if (controlContainer) {
       mapViewport.appendChild(controlContainer);
     }
 
+    // Dimensiona o #map como um quadrado cujo lado é maior que a diagonal da tela (hipotenusa + margem).
+    // Isso garante que em celulares altos (ex: 360x800), mesmo girando 45° ou 90°, NUNCA apareçam laterais pretas!
+    function resizeRotatableMapCanvas() {
+      const vw = mapViewport.clientWidth || window.innerWidth;
+      const vh = mapViewport.clientHeight || window.innerHeight;
+      const diagonal = Math.ceil(Math.hypot(vw, vh)) + 80; // Hipotenusa exata + 80px de folga
+      mapEl.style.width = `${diagonal}px`;
+      mapEl.style.height = `${diagonal}px`;
+      mapEl.style.left = `${Math.floor((vw - diagonal) / 2)}px`;
+      mapEl.style.top = `${Math.floor((vh - diagonal) / 2)}px`;
+      map.invalidateSize({ pan: false });
+    }
+
+    window.addEventListener('resize', resizeRotatableMapCanvas);
+    resizeRotatableMapCanvas();
+
     // Lógica de Rotação (Bearing) e Botão Norte
-    let currentBearing = 0; // em graus
+    let currentBearing = 0;
     const compassBtn = document.getElementById('btnResetNorth');
 
     function normalizeAngle(deg) {
@@ -1562,7 +1575,6 @@
 
     function setMapBearing(deg) {
       currentBearing = normalizeAngle(deg);
-      // Se estiver muito próximo de 0° (Norte), trava em 0° e oculta o botão Norte
       if (Math.abs(currentBearing) < 1.5) {
         currentBearing = 0;
         compassBtn.classList.remove('visible');
@@ -1609,7 +1621,6 @@
         const currentAngle = getTouchAngle(e.touches[0], e.touches[1]);
         let delta = normalizeAngle(currentAngle - touchStartAngle);
 
-        // Limiar de 4 graus para iniciar a rotação sem atrapalhar o pinch-zoom puro
         if (!isRotatingGesture && Math.abs(delta) > 4) {
           isRotatingGesture = true;
           touchStartAngle = currentAngle;
@@ -1686,8 +1697,10 @@
 
     const tileLayers = {};
     Object.keys(layerConfigs).forEach(key => {
+      // keepBuffer: 4 faz o Leaflet manter mais quadrantes carregados nas bordas para rotação instantânea
       const layer = L.tileLayer(layerConfigs[key].url, {
         maxZoom: layerConfigs[key].maxZoom,
+        keepBuffer: 4,
         referrerPolicy: 'origin',
         attribution: layerConfigs[key].name
       });
@@ -1720,7 +1733,7 @@
     });
 
     // ==========================================
-    // 3. GERENCIADOR DE MÚLTIPLOS KMLs SIMULTÂNEOS
+    // 3. GERENCIADOR DE MÚLTIPLOS KMLs (DESCONSIDERANDO O CONTORNO NA CONTAGEM DE COORDENADAS)
     // ==========================================
     const DATASET_PALETTE = [
       '#3b82f6', // Azul
@@ -1735,23 +1748,35 @@
 
     let loadedDatasets = [];
     let activeDatasetFilter = 'all';
-    let currentTypeFilter = 'all';
-    let showLabels = true; // Por padrão sempre mostra os números nos pontos
+    let showLabels = true;
+    let showContours = true;
 
     document.getElementById('chkShowPointLabels').addEventListener('change', (e) => {
       showLabels = e.target.checked;
       loadedDatasets.forEach(ds => {
-        ds.features.forEach(f => {
-          if (f.type === 'point') {
-            const shortLabel = f.name.length <= 4 ? f.name : '•';
-            const newIcon = L.divIcon({
-              className: 'custom-div-icon',
-              html: `<div class="kml-pin" style="width:26px;height:26px;background:${ds.color};">${showLabels ? shortLabel : ''}</div>`,
-              iconSize: [26, 26],
-              iconAnchor: [13, 13],
-              popupAnchor: [0, -13]
-            });
-            f.layer.setIcon(newIcon);
+        ds.pointFeatures.forEach(f => {
+          const shortLabel = f.name.length <= 4 ? f.name : '•';
+          const newIcon = L.divIcon({
+            className: 'custom-div-icon',
+            html: `<div class="kml-pin" style="width:26px;height:26px;background:${ds.color};">${showLabels ? shortLabel : ''}</div>`,
+            iconSize: [26, 26],
+            iconAnchor: [13, 13],
+            popupAnchor: [0, -13]
+          });
+          f.layer.setIcon(newIcon);
+        });
+      });
+    });
+
+    document.getElementById('chkShowContours').addEventListener('change', (e) => {
+      showContours = e.target.checked;
+      loadedDatasets.forEach(ds => {
+        if (!ds.visible) return;
+        ds.contourLayers.forEach(cl => {
+          if (showContours) {
+            ds.layerGroup.addLayer(cl);
+          } else {
+            ds.layerGroup.removeLayer(cl);
           }
         });
       });
@@ -1765,6 +1790,18 @@
         }
       });
       return group.getLayers().length > 0 ? group.getBounds() : null;
+    }
+
+    // Ajusta o zoom levando em conta a janela visível real (mapViewport) e não o canvas expandido de rotação
+    function fitBoundsInViewport(bounds) {
+      if (!bounds || !bounds.isValid()) return;
+      const vw = mapViewport.clientWidth || window.innerWidth;
+      const vh = mapViewport.clientHeight || window.innerHeight;
+      const cw = mapEl.clientWidth || vw;
+      const ch = mapEl.clientHeight || vh;
+      const padX = Math.floor((cw - vw) / 2) + 32;
+      const padY = Math.floor((ch - vh) / 2) + 32;
+      map.fitBounds(bounds, { paddingTopLeft: [padX, padY], paddingBottomRight: [padX, padY] });
     }
 
     function persistDatasetsToStorage() {
@@ -1829,6 +1866,12 @@
       return lines.slice(0, 3).join(' • ') || 'Sem descrição';
     }
 
+    function isContourPlacemark(pm, nameText) {
+      const pmId = (pm.getAttribute('id') || '').toUpperCase();
+      const upperName = (nameText || '').toUpperCase();
+      return pmId.includes('CONTORNO') || upperName.includes('CONTORNO');
+    }
+
     function addKMLDataset(xmlText, fileName = 'Arquivo.kml', customId = null, customColor = null, isVisible = true, autoFit = true) {
       const parser = new DOMParser();
       const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
@@ -1858,7 +1901,8 @@
       });
 
       const placemarks = xmlDoc.querySelectorAll('Placemark');
-      const features = [];
+      const pointFeatures = []; // Somente os pontos GPS reais entram na contagem e na lista!
+      const contourLayers = []; // Contornos do entorno são desenhados no mapa mas desconsiderados na contagem de pontos
       let featureIndex = 0;
 
       placemarks.forEach((pm) => {
@@ -1907,58 +1951,62 @@
           fillOpacity = pc.opacity;
         }
 
-        // Pontos
+        const isContour = isContourPlacemark(pm, name);
+
+        // 1. Pontos GPS (Ignora caso um ponto pertença ao contorno do mapa)
         const pointEls = pm.querySelectorAll('Point');
-        pointEls.forEach(pt => {
-          const coordEl = pt.querySelector('coordinates');
-          const coords = parseCoordinatesString(coordEl ? coordEl.textContent : '');
-          if (coords.length > 0) {
-            const [lat, lng] = coords[0];
-            const id = `${dsId}_feat_${featureIndex++}`;
+        if (!isContour) {
+          pointEls.forEach(pt => {
+            const coordEl = pt.querySelector('coordinates');
+            const coords = parseCoordinatesString(coordEl ? coordEl.textContent : '');
+            if (coords.length > 0) {
+              const [lat, lng] = coords[0];
+              const id = `${dsId}_feat_${featureIndex++}`;
 
-            const shortLabel = name.length <= 4 ? name : '•';
-            const icon = L.divIcon({
-              className: 'custom-div-icon',
-              html: `<div class="kml-pin" style="width:26px;height:26px;background:${dsColor};">${showLabels ? shortLabel : ''}</div>`,
-              iconSize: [26, 26],
-              iconAnchor: [13, 13],
-              popupAnchor: [0, -13]
-            });
+              const shortLabel = name.length <= 4 ? name : '•';
+              const icon = L.divIcon({
+                className: 'custom-div-icon',
+                html: `<div class="kml-pin" style="width:26px;height:26px;background:${ds.color || dsColor};">${showLabels ? shortLabel : ''}</div>`,
+                iconSize: [26, 26],
+                iconAnchor: [13, 13],
+                popupAnchor: [0, -13]
+              });
 
-            const marker = L.marker([lat, lng], { icon });
-            const popupHtml = `
-              <div class="popup-header">
-                <span>📍 Ponto ${name}</span>
-                <span style="font-size:10.5px; color:#94a3b8; font-weight:500;">${fileName}</span>
-              </div>
-              <div class="popup-body">${description || '<p>Sem metadados adicionais.</p>'}</div>
-              <div class="popup-footer">
-                <a class="popup-link" href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" rel="noopener">
-                  🗺️ Abrir no Google Maps
-                </a>
-              </div>
-            `;
-            marker.bindPopup(popupHtml, { maxWidth: 340 });
-            marker.on('click', () => highlightSidebarCard(id));
-            layerGroup.addLayer(marker);
+              const marker = L.marker([lat, lng], { icon });
+              const popupHtml = `
+                <div class="popup-header">
+                  <span>📍 Ponto ${name}</span>
+                  <span style="font-size:10.5px; color:#94a3b8; font-weight:500;">${fileName}</span>
+                </div>
+                <div class="popup-body">${description || '<p>Sem metadados adicionais.</p>'}</div>
+                <div class="popup-footer">
+                  <a class="popup-link" href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" rel="noopener">
+                    🗺️ Abrir no Google Maps
+                  </a>
+                </div>
+              `;
+              marker.bindPopup(popupHtml, { maxWidth: 340 });
+              marker.on('click', () => highlightSidebarCard(id));
+              layerGroup.addLayer(marker);
 
-            features.push({
-              id,
-              datasetId: dsId,
-              datasetName: fileName,
-              datasetColor: dsColor,
-              type: 'point',
-              name,
-              description,
-              summary: extractCleanSummary(description),
-              lat,
-              lng,
-              layer: marker
-            });
-          }
-        });
+              pointFeatures.push({
+                id,
+                datasetId: dsId,
+                datasetName: fileName,
+                datasetColor: dsColor,
+                type: 'point',
+                name,
+                description,
+                summary: extractCleanSummary(description),
+                lat,
+                lng,
+                layer: marker
+              });
+            }
+          });
+        }
 
-        // Linhas / Contornos
+        // 2. Linhas / Contornos do Entorno (Desenhados no mapa, mas NUNCA somados na contagem de pontos/coordenadas)
         const lineEls = pm.querySelectorAll('LineString');
         if (lineEls.length > 0) {
           const multiCoords = [];
@@ -1969,85 +2017,32 @@
           });
 
           if (multiCoords.length > 0) {
-            const id = `${dsId}_feat_${featureIndex++}`;
             const polyline = L.polyline(multiCoords, {
               color: strokeColor,
               weight: Math.max(strokeWidth, 3),
-              opacity: 0.95
+              opacity: 0.9,
+              interactive: false
             });
-
-            const center = polyline.getBounds().getCenter();
-            const totalVertices = multiCoords.reduce((acc, c) => acc + c.length, 0);
-            const popupHtml = `
-              <div class="popup-header">
-                <span>📐 ${name}</span>
-                <span style="font-size:10.5px; color:#94a3b8; font-weight:500;">${fileName}</span>
-              </div>
-              <div class="popup-body">
-                ${description ? `<p>${description}</p>` : ''}
-                <p><b>Arquivo:</b> ${fileName}</p>
-                <p><b>Vértices GPS:</b> ${totalVertices} coordenadas</p>
-              </div>
-            `;
-            polyline.bindPopup(popupHtml);
-            polyline.on('click', () => highlightSidebarCard(id));
-            layerGroup.addLayer(polyline);
-
-            features.push({
-              id,
-              datasetId: dsId,
-              datasetName: fileName,
-              datasetColor: dsColor,
-              type: 'line',
-              name,
-              description,
-              summary: `Contorno geométrico com ${totalVertices} vértices GPS.`,
-              lat: center.lat,
-              lng: center.lng,
-              layer: polyline
-            });
+            contourLayers.push(polyline);
+            if (showContours) layerGroup.addLayer(polyline);
           }
         }
 
-        // Polígonos
+        // 3. Polígonos do Entorno
         const polyEls = pm.querySelectorAll('Polygon');
         polyEls.forEach(polyEl => {
           const outerEl = polyEl.querySelector('outerBoundaryIs coordinates');
           const coords = parseCoordinatesString(outerEl ? outerEl.textContent : '');
           if (coords.length > 0) {
-            const id = `${dsId}_feat_${featureIndex++}`;
             const polygon = L.polygon(coords, {
               color: strokeColor,
               weight: strokeWidth,
               fillColor: fillColor,
-              fillOpacity: fillOpacity
+              fillOpacity: fillOpacity,
+              interactive: false
             });
-
-            const center = polygon.getBounds().getCenter();
-            const popupHtml = `
-              <div class="popup-header">
-                <span>⬡ ${name}</span>
-                <span style="font-size:10.5px; color:#94a3b8; font-weight:500;">${fileName}</span>
-              </div>
-              <div class="popup-body">${description || '<p>Polígono KML</p>'}</div>
-            `;
-            polygon.bindPopup(popupHtml);
-            polygon.on('click', () => highlightSidebarCard(id));
-            layerGroup.addLayer(polygon);
-
-            features.push({
-              id,
-              datasetId: dsId,
-              datasetName: fileName,
-              datasetColor: dsColor,
-              type: 'line',
-              name,
-              description,
-              summary: extractCleanSummary(description) || `Polígono com ${coords.length} vértices.`,
-              lat: center.lat,
-              lng: center.lng,
-              layer: polygon
-            });
+            contourLayers.push(polygon);
+            if (showContours) layerGroup.addLayer(polygon);
           }
         });
       });
@@ -2059,7 +2054,8 @@
         color: dsColor,
         visible: isVisible,
         layerGroup,
-        features
+        pointFeatures,
+        contourLayers
       };
 
       loadedDatasets.push(datasetObj);
@@ -2067,7 +2063,7 @@
       updateUI();
 
       if (autoFit && layerGroup.getLayers().length > 0) {
-        map.fitBounds(layerGroup.getBounds(), { padding: [36, 36] });
+        fitBoundsInViewport(layerGroup.getBounds());
       }
       return datasetObj;
     }
@@ -2109,7 +2105,7 @@
     document.getElementById('btnClearAllKmls').addEventListener('click', clearAllDatasets);
 
     // ==========================================
-    // 4. RENDERIZAÇÃO DA SIDEBAR ESQUERDA E AGRUPAMENTO POR KML
+    // 4. RENDERIZAÇÃO DA SIDEBAR ESQUERDA (CONTANDO APENAS OS PONTOS REAIS)
     // ==========================================
     function updateUI() {
       const filesListEl = document.getElementById('kmlFilesList');
@@ -2121,19 +2117,19 @@
       if (loadedDatasets.length > 1) {
         const allChip = document.createElement('div');
         allChip.className = `kml-file-chip ${activeDatasetFilter === 'all' ? 'active-filter' : ''}`;
-        const totalPts = loadedDatasets.reduce((acc, d) => acc + d.features.length, 0);
+        const totalPts = loadedDatasets.reduce((acc, d) => acc + d.pointFeatures.length, 0);
         allChip.innerHTML = `
           <div class="kml-chip-left">
             <span class="kml-color-dot" style="background:linear-gradient(135deg,#3b82f6,#10b981);"></span>
             <span class="kml-chip-name">Mostrar Todos os Arquivos (${loadedDatasets.length})</span>
-            <span class="kml-chip-count">${totalPts} itens</span>
+            <span class="kml-chip-count">${totalPts} pts</span>
           </div>
         `;
         allChip.addEventListener('click', () => {
           activeDatasetFilter = 'all';
           updateUI();
           const b = getAllVisibleBounds();
-          if (b) map.fitBounds(b, { padding: [36, 36] });
+          if (b) fitBoundsInViewport(b);
         });
         filesListEl.appendChild(allChip);
       }
@@ -2143,14 +2139,13 @@
         chip.className = `kml-file-chip ${activeDatasetFilter === ds.id ? 'active-filter' : ''}`;
         chip.style.opacity = ds.visible ? '1' : '0.5';
 
-        const ptsCount = ds.features.filter(f => f.type === 'point').length;
-        const linesCount = ds.features.filter(f => f.type === 'line').length;
+        const ptsCount = ds.pointFeatures.length;
 
         chip.innerHTML = `
           <div class="kml-chip-left" title="Clique para filtrar e focar neste KML">
             <span class="kml-color-dot" style="background:${ds.color};"></span>
             <span class="kml-chip-name">${ds.fileName}</span>
-            <span class="kml-chip-count">${ptsCount}p / ${linesCount}c</span>
+            <span class="kml-chip-count">${ptsCount} pontos</span>
           </div>
           <div class="kml-chip-actions">
             <button class="chip-icon-btn btn-zoom-ds" title="Enquadrar este KML no mapa">🎯</button>
@@ -2163,7 +2158,7 @@
           activeDatasetFilter = (activeDatasetFilter === ds.id) ? 'all' : ds.id;
           updateUI();
           if (ds.visible && ds.layerGroup.getLayers().length > 0) {
-            map.fitBounds(ds.layerGroup.getBounds(), { padding: [36, 36] });
+            fitBoundsInViewport(ds.layerGroup.getBounds());
           }
         });
 
@@ -2171,7 +2166,7 @@
           e.stopPropagation();
           if (!ds.visible) toggleDatasetVisibility(ds.id);
           if (ds.layerGroup.getLayers().length > 0) {
-            map.fitBounds(ds.layerGroup.getBounds(), { padding: [36, 36] });
+            fitBoundsInViewport(ds.layerGroup.getBounds());
           }
           if (isMobileViewport()) closeSidebar();
         });
@@ -2189,20 +2184,15 @@
         filesListEl.appendChild(chip);
       });
 
-      let visibleFeatures = [];
+      let visiblePoints = [];
       loadedDatasets.forEach(ds => {
         if (!ds.visible) return;
         if (activeDatasetFilter !== 'all' && activeDatasetFilter !== ds.id) return;
-        visibleFeatures = visibleFeatures.concat(ds.features);
+        visiblePoints = visiblePoints.concat(ds.pointFeatures);
       });
 
-      const pointsCount = visibleFeatures.filter(f => f.type === 'point').length;
-      const linesCount = visibleFeatures.filter(f => f.type === 'line').length;
-
-      document.getElementById('totalItemsPill').textContent = visibleFeatures.length;
-      document.getElementById('tabAllCount').textContent = visibleFeatures.length;
-      document.getElementById('tabPointCount').textContent = pointsCount;
-      document.getElementById('tabLineCount').textContent = linesCount;
+      document.getElementById('totalItemsPill').textContent = visiblePoints.length;
+      document.getElementById('totalPointsHeaderCount').textContent = visiblePoints.length;
 
       renderSidebarItems();
     }
@@ -2232,40 +2222,34 @@
         if (!ds.visible) return;
         if (activeDatasetFilter !== 'all' && activeDatasetFilter !== ds.id) return;
 
-        const matchingFeatures = ds.features.filter(item => {
-          if (currentTypeFilter !== 'all' && item.type !== currentTypeFilter) return false;
+        const matchingPoints = ds.pointFeatures.filter(item => {
           if (!query) return true;
           const haystack = `${item.name} ${item.summary} ${item.description} ${ds.fileName}`.toLowerCase();
           return haystack.includes(query);
         });
 
-        if (matchingFeatures.length === 0) return;
+        if (matchingPoints.length === 0) return;
 
         const groupHeader = document.createElement('div');
         groupHeader.className = 'dataset-group-header';
         groupHeader.style.borderLeftColor = ds.color;
         groupHeader.innerHTML = `
           <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">📂 ${ds.fileName}</span>
-          <span>${matchingFeatures.length} itens</span>
+          <span>${matchingPoints.length} pontos</span>
         `;
         listEl.appendChild(groupHeader);
 
-        matchingFeatures.forEach(item => {
+        matchingPoints.forEach(item => {
           totalRendered++;
           const card = document.createElement('div');
           card.className = 'item-card';
           card.id = `card_${item.id}`;
 
-          const isPoint = item.type === 'point';
-          const badgeText = isPoint ? item.name : '📐';
-          const titleText = isPoint ? `Ponto #${item.name}` : item.name;
-          const badgeBg = isPoint ? ds.color : '#ef4444';
-
           card.innerHTML = `
             <div class="item-top">
               <div class="item-title">
-                <span class="point-badge" style="background:${badgeBg};">${badgeText}</span>
-                <span>${titleText}</span>
+                <span class="point-badge" style="background:${ds.color};">${item.name}</span>
+                <span>Ponto #${item.name}</span>
               </div>
               <span class="item-type-tag" title="${ds.fileName}">${ds.fileName}</span>
             </div>
@@ -2281,13 +2265,8 @@
             if (isMobileViewport()) {
               closeSidebar();
             }
-            if (item.type === 'point') {
-              map.flyTo([item.lat, item.lng], Math.max(map.getZoom(), 17), { duration: 0.5 });
-              item.layer.openPopup();
-            } else if (item.layer.getBounds) {
-              map.fitBounds(item.layer.getBounds(), { padding: [40, 40] });
-              item.layer.openPopup();
-            }
+            map.flyTo([item.lat, item.lng], Math.max(map.getZoom(), 17), { duration: 0.5 });
+            item.layer.openPopup();
           });
 
           listEl.appendChild(card);
@@ -2297,7 +2276,7 @@
       if (totalRendered === 0) {
         listEl.innerHTML = `
           <div style="text-align:center; padding: 32px 16px; color: var(--text-muted); font-size: 13px;">
-            Nenhum ponto ou contorno encontrado para o filtro atual.
+            Nenhum ponto encontrado para a busca atual.
           </div>
         `;
       }
@@ -2475,30 +2454,13 @@
       updateDownloadEstimationUI();
     });
 
-    // Otimizador de Download
+    // Otimizador de Download: Baseado somente nos Pontos GPS reais (desconsiderando os vértices do contorno!)
     function collectGeometryAnchorCoords() {
       const anchors = [];
       loadedDatasets.forEach(ds => {
         if (!ds.visible) return;
-        ds.features.forEach(f => {
-          if (f.type === 'point') {
-            anchors.push([f.lat, f.lng]);
-          } else if (f.layer && f.layer.getLatLngs) {
-            const raw = f.layer.getLatLngs();
-            const flat = raw.flat ? raw.flat(3) : [];
-            for (let i = 0; i < flat.length; i++) {
-              const pt = flat[i];
-              if (pt && typeof pt.lat === 'number') {
-                anchors.push([pt.lat, pt.lng]);
-                if (i < flat.length - 1) {
-                  const next = flat[i + 1];
-                  if (next && typeof next.lat === 'number') {
-                    anchors.push([(pt.lat + next.lat) / 2, (pt.lng + next.lng) / 2]);
-                  }
-                }
-              }
-            }
-          }
+        ds.pointFeatures.forEach(f => {
+          anchors.push([f.lat, f.lng]);
         });
       });
       return anchors;
@@ -2667,19 +2629,10 @@
     // ==========================================
     document.getElementById('searchInput').addEventListener('input', renderSidebarItems);
 
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentTypeFilter = btn.dataset.filter;
-        renderSidebarItems();
-      });
-    });
-
     document.getElementById('btnFitBounds').addEventListener('click', () => {
       const b = getAllVisibleBounds();
       if (b) {
-        map.fitBounds(b, { padding: [36, 36] });
+        fitBoundsInViewport(b);
       }
     });
 
@@ -2709,7 +2662,7 @@
       }
       const b = getAllVisibleBounds();
       if (b) {
-        map.fitBounds(b, { padding: [36, 36] });
+        fitBoundsInViewport(b);
       }
       openSidebar();
     }
@@ -2739,6 +2692,7 @@
     });
 
     window.addEventListener('DOMContentLoaded', () => {
+      resizeRotatableMapCanvas();
       try {
         const raw = localStorage.getItem('multi_kml_datasets_v1');
         if (raw) {
@@ -2748,7 +2702,7 @@
               addKMLDataset(item.xmlText, item.fileName, item.id, item.color, item.visible !== false, false);
             });
             const b = getAllVisibleBounds();
-            if (b) map.fitBounds(b, { padding: [36, 36] });
+            if (b) fitBoundsInViewport(b);
           }
         }
       } catch (e) {}
