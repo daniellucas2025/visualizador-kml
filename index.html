@@ -10,7 +10,7 @@
   <link rel="manifest" href="./manifest.json" />
   <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png" />
   <link rel="apple-touch-icon" href="./icon-192.png" />
-  <title>Visualizador Universal de KML / KMZ (Offline PWA)</title>
+  <title>Visualizador Universal de KML / KMZ (Multi-KML & Offline PWA)</title>
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <!-- JSZip para suporte a KMZ -->
@@ -51,68 +51,124 @@
       overflow: hidden;
     }
 
-    /* Header */
+    /* ==========================================
+       HEADER / BARRA DO TOPO
+       ========================================== */
     header {
       background-color: var(--bg-panel);
       border-bottom: 1px solid var(--border);
-      padding: 8px 14px;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      z-index: 1000;
-      flex-wrap: nowrap;
-      overflow-x: auto;
+      gap: 10px;
+      z-index: 1100;
+      flex-shrink: 0;
     }
 
-    header::-webkit-scrollbar {
-      height: 3px;
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-shrink: 0;
     }
-    header::-webkit-scrollbar-thumb {
+
+    .sidebar-toggle-btn {
       background: var(--bg-card);
-      border-radius: 3px;
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      height: 36px;
+      padding: 0 10px;
+      border-radius: 9px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.15s;
+    }
+
+    .sidebar-toggle-btn:hover {
+      background: var(--bg-card-hover);
+    }
+
+    .sidebar-count-pill {
+      background: var(--accent);
+      color: #fff;
+      font-size: 10.5px;
+      padding: 1px 6px;
+      border-radius: 99px;
+      font-weight: 700;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
+      gap: 9px;
+      cursor: pointer;
+      padding: 3px 8px 3px 3px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+
+    .brand:hover {
+      background: rgba(59, 130, 246, 0.14);
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    .brand:active {
+      transform: scale(0.97);
     }
 
     .brand-icon {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       background: linear-gradient(135deg, #3b82f6, #1d4ed8);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 17px;
-      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      font-size: 18px;
+      box-shadow: 0 3px 10px rgba(59, 130, 246, 0.35);
+      position: relative;
       flex-shrink: 0;
     }
 
+    .brand-icon::after {
+      content: '+';
+      position: absolute;
+      bottom: -3px;
+      right: -3px;
+      width: 15px;
+      height: 15px;
+      background: #10b981;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--bg-panel);
+    }
+
     .brand-text h1 {
-      font-size: 14.5px;
+      font-size: 14px;
       font-weight: 700;
       letter-spacing: -0.02em;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
       white-space: nowrap;
     }
 
     .brand-text p {
-      font-size: 11px;
-      color: var(--text-muted);
+      font-size: 10.5px;
+      color: #93c5fd;
       white-space: nowrap;
-    }
-
-    @media (max-width: 1150px) {
-      .brand-text p {
-        display: none;
-      }
     }
 
     .status-pill {
@@ -136,20 +192,27 @@
       align-items: center;
       gap: 6px;
       flex-wrap: nowrap;
-      flex-shrink: 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .toolbar::-webkit-scrollbar {
+      display: none;
     }
 
     .btn {
       background-color: var(--bg-card);
       color: var(--text-main);
       border: 1px solid var(--border);
-      padding: 6px 11px;
+      height: 34px;
+      padding: 0 11px;
       border-radius: 8px;
       font-size: 12px;
       font-weight: 500;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 5px;
       transition: all 0.15s ease;
       white-space: nowrap;
@@ -186,48 +249,9 @@
       color: #fff;
     }
 
-    .file-input-wrapper {
-      position: relative;
-      overflow: hidden;
-      display: inline-block;
-      flex-shrink: 0;
-    }
-
-    .file-input-wrapper input[type=file] {
-      position: absolute;
-      left: 0;
-      top: 0;
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-    }
-
-    .badge-stats {
-      display: flex;
-      gap: 10px;
-      font-size: 12px;
-      background: rgba(15, 23, 42, 0.6);
-      padding: 6px 11px;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    .stat-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      display: inline-block;
-    }
-
-    /* Main Workspace */
+    /* ==========================================
+       MAIN CONTAINER & LEFT SIDEBAR DRAWER
+       ========================================== */
     .main-container {
       flex: 1;
       display: flex;
@@ -235,15 +259,34 @@
       position: relative;
     }
 
-    /* Sidebar */
+    .sidebar-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(2px);
+      z-index: 950;
+      display: none;
+    }
+
+    .sidebar-backdrop.active {
+      display: block;
+    }
+
     .sidebar {
-      width: 360px;
+      width: 375px;
+      max-width: 88vw;
       background-color: var(--bg-panel);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      z-index: 500;
-      transition: transform 0.25s ease;
+      z-index: 1000;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), margin-left 0.25s ease;
+      height: 100%;
+      flex-shrink: 0;
+    }
+
+    .sidebar.collapsed {
+      margin-left: -375px;
     }
 
     .sidebar-header {
@@ -251,26 +294,132 @@
       border-bottom: 1px solid var(--border);
       display: flex;
       flex-direction: column;
-      gap: 9px;
+      gap: 10px;
     }
 
-    .file-banner {
-      background: rgba(59, 130, 246, 0.12);
-      border: 1px solid rgba(59, 130, 246, 0.3);
-      border-radius: 8px;
-      padding: 7px 10px;
-      font-size: 11.5px;
+    .sidebar-title-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      color: #93c5fd;
+      gap: 8px;
+    }
+
+    .sidebar-title-row h2 {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
       gap: 6px;
     }
 
-    .file-banner strong {
-      color: #fff;
+    .close-sidebar-mobile {
+      display: none;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+
+    /* Lista de Arquivos KML Carregados */
+    .kml-files-section {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 175px;
+      overflow-y: auto;
+      padding-right: 2px;
+    }
+
+    .kml-files-section::-webkit-scrollbar {
+      width: 5px;
+    }
+    .kml-files-section::-webkit-scrollbar-thumb {
+      background: var(--bg-card);
+      border-radius: 3px;
+    }
+
+    .kml-file-chip {
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12px;
+      transition: all 0.15s;
+    }
+
+    .kml-file-chip.active-filter {
+      border-color: var(--accent);
+      background: rgba(59, 130, 246, 0.16);
+    }
+
+    .kml-chip-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .kml-color-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      border: 2px solid #fff;
+    }
+
+    .kml-chip-name {
       font-weight: 600;
-      word-break: break-all;
+      color: #f8fafc;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .kml-chip-count {
+      font-size: 10.5px;
+      color: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .kml-chip-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .chip-icon-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 3px 5px;
+      border-radius: 5px;
+      font-size: 12.5px;
+      transition: all 0.15s;
+    }
+
+    .chip-icon-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .chip-icon-btn.danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+      color: #fca5a5;
     }
 
     .search-box {
@@ -284,7 +433,7 @@
       color: var(--text-main);
       padding: 8px 12px 8px 32px;
       border-radius: 8px;
-      font-size: 13px;
+      font-size: 12.5px;
       outline: none;
     }
 
@@ -303,7 +452,7 @@
 
     .filter-tabs {
       display: flex;
-      gap: 6px;
+      gap: 5px;
     }
 
     .tab-btn {
@@ -311,10 +460,10 @@
       background: var(--bg-dark);
       border: 1px solid var(--border);
       color: var(--text-muted);
-      padding: 6px;
+      padding: 6px 4px;
       border-radius: 6px;
-      font-size: 11.5px;
-      font-weight: 500;
+      font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.15s;
     }
@@ -325,6 +474,7 @@
       border-color: var(--accent);
     }
 
+    /* Lista de Pontos Agrupados */
     .items-list {
       flex: 1;
       overflow-y: auto;
@@ -342,17 +492,39 @@
       border-radius: 3px;
     }
 
+    .dataset-group-header {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #93c5fd;
+      padding: 6px 8px;
+      background: rgba(15, 23, 42, 0.75);
+      border-left: 3px solid var(--accent);
+      border-radius: 4px;
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
     .empty-state-box {
-      margin: auto 10px;
+      margin: auto 8px;
       background: rgba(15, 23, 42, 0.55);
       border: 1px dashed #475569;
       border-radius: 14px;
-      padding: 26px 18px;
+      padding: 24px 16px;
       text-align: center;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+
+    .empty-state-box:hover {
+      border-color: var(--accent);
     }
 
     .empty-state-box h3 {
@@ -419,16 +591,16 @@
       justify-content: center;
     }
 
-    .point-badge.poly {
-      background: #ef4444;
-    }
-
     .item-type-tag {
       font-size: 10px;
       padding: 2px 7px;
       border-radius: 99px;
       background: rgba(148, 163, 184, 0.15);
       color: var(--text-muted);
+      max-width: 130px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .item-summary {
@@ -451,12 +623,175 @@
       margin-top: 2px;
     }
 
-    /* Map Container */
+    /* ==========================================
+       MAPA & BOTÕES DE CAMADA DE SATÉLITE
+       ========================================== */
     #map {
       flex: 1;
       height: 100%;
       width: 100%;
       background: #0b1120;
+    }
+
+    .map-floating-bar {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 800;
+      display: flex;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(8px);
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid #334155;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+      max-width: calc(100vw - 20px);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .map-floating-bar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .layer-btn {
+      background: transparent;
+      border: none;
+      color: #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .layer-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
+    }
+
+    /* ==========================================
+       RESPONSIVIDADE MOBILE (CELULAR)
+       ========================================== */
+    @media (max-width: 768px) {
+      header {
+        padding: 6px 8px;
+        gap: 6px;
+      }
+
+      .brand-text p {
+        display: none;
+      }
+
+      .brand-text h1 .app-title-text {
+        display: none;
+      }
+
+      .btn .btn-label-desktop {
+        display: none;
+      }
+
+      .btn {
+        padding: 0 9px;
+        height: 34px;
+        font-size: 12px;
+      }
+
+      /* Sidebar Esquerda Gaveta (Drawer) no Celular */
+      .sidebar {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 330px;
+        max-width: 86vw;
+        margin-left: 0 !important;
+        transform: translateX(0);
+        box-shadow: 8px 0 30px rgba(0, 0, 0, 0.65);
+      }
+
+      .sidebar.collapsed {
+        transform: translateX(-105%);
+      }
+
+      .close-sidebar-mobile {
+        display: inline-flex;
+      }
+
+      /* Barra de Satélite Centralizada e Compacta no Celular */
+      .map-floating-bar {
+        top: 8px;
+        left: 8px;
+        right: 8px;
+        max-width: none;
+        justify-content: space-between;
+        padding: 3px;
+      }
+
+      .layer-btn {
+        flex: 1;
+        justify-content: center;
+        padding: 6px 5px;
+        font-size: 11px;
+      }
+
+      .layer-btn .layer-sub {
+        display: none;
+      }
+    }
+
+    /* Botão Flutuante de Localização (Estilo Google Maps) acima do Zoom */
+    .gmaps-locate-btn {
+      position: absolute;
+      bottom: 92px;
+      right: 10px;
+      z-index: 800;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+      transition: all 0.18s ease;
+    }
+
+    .gmaps-locate-btn:hover {
+      background: #334155;
+      color: #60a5fa;
+      transform: translateY(-1px);
+    }
+
+    .gmaps-locate-btn:active {
+      transform: scale(0.93);
+    }
+
+    .gmaps-locate-btn.locating {
+      color: #3b82f6;
+      border-color: #3b82f6;
+      animation: pulseLocate 1.2s infinite;
+    }
+
+    .gmaps-locate-btn.active-gps {
+      color: #10b981;
+      border-color: #10b981;
+    }
+
+    @keyframes pulseLocate {
+      0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.55); }
+      70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
     }
 
     /* Dropzone Overlay */
@@ -576,10 +911,6 @@
       outline: none;
     }
 
-    .ttl-input:focus, .ttl-select:focus {
-      border-color: var(--accent);
-    }
-
     .progress-bar-bg {
       width: 100%;
       height: 10px;
@@ -601,7 +932,6 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #2563eb;
       color: #ffffff;
       font-weight: 700;
       font-size: 11px;
@@ -609,12 +939,11 @@
       border: 2px solid #ffffff;
       border-radius: 50%;
       box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55);
-      transition: transform 0.15s ease, background-color 0.15s ease;
+      transition: transform 0.15s ease;
     }
 
     .kml-pin:hover {
       transform: scale(1.22);
-      background: #f59e0b;
       z-index: 9999 !important;
     }
 
@@ -689,71 +1018,18 @@
       align-items: center;
       gap: 4px;
     }
-
-    /* Floating Map Controls */
-    .map-floating-bar {
-      position: absolute;
-      top: 12px;
-      right: 12px;
-      z-index: 800;
-      display: flex;
-      gap: 4px;
-      background: rgba(30, 41, 59, 0.92);
-      backdrop-filter: blur(6px);
-      padding: 5px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
-      max-width: calc(100vw - 24px);
-      overflow-x: auto;
-    }
-
-    .layer-btn {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      padding: 6px 10px;
-      border-radius: 6px;
-      font-size: 11.5px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
-    }
-
-    .layer-btn.active {
-      background: var(--accent);
-      color: #fff;
-    }
-
-    @media (max-width: 768px) {
-      header {
-        padding: 8px 10px;
-        gap: 8px;
-      }
-      .brand-text p {
-        display: none;
-      }
-      .badge-stats {
-        display: none;
-      }
-      .main-container {
-        flex-direction: column-reverse;
-      }
-      .sidebar {
-        width: 100%;
-        height: 42%;
-      }
-    }
   </style>
 </head>
 <body>
 
+  <!-- Input de Arquivo Oculto Acionado pelo Ícone do Programa e Botões -->
+  <input type="file" id="fileInput" accept=".kml,.kmz,.xml" multiple style="display:none;" />
+
   <!-- Drag and Drop Overlay -->
   <div class="drop-overlay" id="dropOverlay">
     <div style="font-size: 56px;">🗺️</div>
-    <h2>Solte seu arquivo .KML ou .KMZ aqui</h2>
-    <p style="color: #94a3b8;">O arquivo ficará salvo automaticamente no cache offline do seu aparelho</p>
+    <h2>Solte seus arquivos .KML ou .KMZ aqui</h2>
+    <p style="color: #94a3b8;">Você pode soltar vários arquivos de uma vez — eles ficarão organizados separadamente</p>
   </div>
 
   <!-- Modal de Configuração de Cache e Mapa Offline -->
@@ -764,7 +1040,6 @@
         <button class="close-btn" id="btnCloseModal">✕</button>
       </div>
 
-      <!-- Indicador de Salvamento Automático ao Navegar Online -->
       <div class="auto-cache-badge">
         <span style="font-size: 18px;">⚡</span>
         <div>
@@ -772,7 +1047,6 @@
         </div>
       </div>
 
-      <!-- Configuração de Tempo para Apagar o Cache (TTL) -->
       <div class="storage-box">
         <label style="font-weight: 600; font-size: 12.5px; color: #f8fafc;">
           ⏱️ Tempo para apagar o cache do mapa automaticamente:
@@ -802,13 +1076,12 @@
           <button class="btn btn-primary" id="btnApplyCustomTtl" style="padding: 6px 12px;">Salvar Tempo</button>
         </div>
 
-        <div style="font-size: 11px; color: var(--text-muted); display:flex; justify-content:space-between; align-items:center;">
+        <div style="font-size: 11px; color: var(--text-muted); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px;">
           <span id="ttlStatusDescription">Os mapas salvos expiram após 30 dias.</span>
           <span style="color:#34d399;">*(Offline nunca apaga até voltar a ficar online)*</span>
         </div>
       </div>
 
-      <!-- Estatísticas do Cache Atual -->
       <div class="storage-box">
         <div style="display:flex; justify-content:space-between;">
           <span>📦 Quadrantes salvos no aparelho:</span>
@@ -824,10 +1097,9 @@
         </div>
       </div>
 
-      <!-- Pré-Download Completo da Região (Opcional) -->
       <div class="storage-box">
         <label style="font-weight: 600; font-size: 12px; color:#f8fafc;">
-          📥 Pré-carregar toda a área do KML de uma só vez (Opcional):
+          📥 Pré-carregar toda a área dos KMLs de uma só vez (Opcional):
         </label>
         <select id="downloadZoomMode" class="ttl-select">
           <option value="17">Rápido — Zoom 12 ao 17 (Visão Geral + Fazendas)</option>
@@ -858,65 +1130,72 @@
 
   <!-- Header -->
   <header>
-    <div class="brand">
-      <div class="brand-icon">📍</div>
-      <div class="brand-text">
-        <h1>
-          Visualizador KML
-          <span class="status-pill" id="netStatusPill">● Online (Auto-Cache)</span>
-        </h1>
-        <p>Os mapas carregados online ficam salvos automaticamente no aparelho</p>
+    <div class="header-left">
+      <!-- Botão para abrir/fechar a Sidebar Esquerda -->
+      <button class="sidebar-toggle-btn" id="btnToggleSidebar" title="Abrir/Fechar Painel Lateral Esquerdo">
+        <span>☰</span>
+        <span class="btn-label-desktop">Painel</span>
+        <span class="sidebar-count-pill" id="totalItemsPill">0</span>
+      </button>
+
+      <!-- Clicar no Ícone do Programa abre o Seletor de Arquivos KML/KMZ -->
+      <div class="brand" id="brandOpenKml" title="Clique no ícone para adicionar arquivos .KML ou .KMZ">
+        <div class="brand-icon">📍</div>
+        <div class="brand-text">
+          <h1>
+            <span class="app-title-text">KML Viewer</span>
+            <span class="status-pill" id="netStatusPill">● Online</span>
+          </h1>
+          <p>Clique aqui para abrir KML / KMZ</p>
+        </div>
       </div>
     </div>
 
     <div class="toolbar">
-      <div class="badge-stats">
-        <div class="stat-item"><span class="dot" style="background:#3b82f6"></span> <strong id="countPoints">0</strong> Pontos</div>
-        <div class="stat-item"><span class="dot" style="background:#ef4444"></span> <strong id="countLines">0</strong> Contornos</div>
-      </div>
-
-      <button class="btn btn-warning" id="btnInstallPWA" style="display:none;">
-        📲 Instalar App
+      <button class="btn btn-primary" id="btnAddKmlToolbar" title="Adicionar um ou mais arquivos KML/KMZ">
+        📂 <span class="btn-label-desktop">Adicionar</span> KML
       </button>
 
-      <button class="btn btn-success" id="btnOpenOfflineModal" title="Configurar tempo de cache e baixar mapas para uso sem internet">
-        📥 Mapa Offline (<span id="headerTileCount">0</span>)
+      <button class="btn btn-success" id="btnOpenOfflineModal" title="Configurar tempo de cache e mapa offline">
+        📥 <span class="btn-label-desktop">Offline</span> (<span id="headerTileCount">0</span>)
       </button>
 
-      <button class="btn" id="btnMyLocation" title="Mostrar minha posição GPS atual no mapa">
-        🛰️ Meu GPS
-      </button>
-
-      <button class="btn" id="btnFitBounds" title="Centralizar elementos do KML">
-        🎯 Enquadrar
+      <button class="btn" id="btnFitBounds" title="Enquadrar todos os KMLs visíveis">
+        🎯 <span class="btn-label-desktop">Enquadrar</span>
       </button>
 
       <button class="btn" id="btnToggleLabels" title="Mostrar/Ocultar números nos pontos">
-        🔢 Rótulos
+        🔢 <span class="btn-label-desktop">Rótulos</span>
       </button>
 
-      <div class="file-input-wrapper">
-        <button class="btn btn-primary">
-          📂 Abrir KML / KMZ
-        </button>
-        <input type="file" id="fileInput" accept=".kml,.kmz,.xml" />
-      </div>
+      <button class="btn btn-warning" id="btnInstallPWA" style="display:none;">
+        📲 <span class="btn-label-desktop">Instalar</span>
+      </button>
     </div>
   </header>
 
   <!-- Main Workspace -->
   <div class="main-container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
+    <!-- Backdrop para fechar sidebar ao tocar fora no celular -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <!-- Sidebar Esquerda -->
+    <aside class="sidebar" id="leftSidebar">
       <div class="sidebar-header">
-        <div class="file-banner">
-          <span>Arquivo: <strong id="currentFileName">Nenhum arquivo aberto</strong></span>
-          <button class="btn" id="btnClearKml" style="padding:2px 7px; font-size:10.5px; display:none;" title="Fechar arquivo atual">Fechar</button>
+        <div class="sidebar-title-row">
+          <h2>🗂️ Arquivos KML Carregados (<span id="loadedFilesCount">0</span>)</h2>
+          <div style="display:flex; gap:4px; align-items:center;">
+            <button class="btn" id="btnClearAllKmls" style="height:26px; padding:0 8px; font-size:11px; display:none; color:#fca5a5;">Limpar Todos</button>
+            <button class="close-sidebar-mobile" id="btnCloseSidebarMobile" title="Fechar painel">✕</button>
+          </div>
         </div>
+
+        <!-- Lista de KMLs Abertos Simultaneamente -->
+        <div class="kml-files-section" id="kmlFilesList"></div>
 
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" placeholder="Buscar ponto, fazenda, responsável, código..." />
+          <input type="text" id="searchInput" placeholder="Buscar ponto, fazenda, responsável, arquivo..." />
         </div>
 
         <div class="filter-tabs">
@@ -926,18 +1205,31 @@
         </div>
       </div>
 
+      <!-- Lista de Dados e Pontos Separados por KML -->
       <div class="items-list" id="itemsList"></div>
     </aside>
 
     <!-- Map -->
     <div id="map">
       <div class="map-floating-bar">
-        <button class="layer-btn active" data-layer="hybrid">🛰️ Satélite + Ruas</button>
-        <button class="layer-btn" data-layer="satellite">🌎 Satélite Puro</button>
-        <button class="layer-btn" data-layer="streets">🗺️ Ruas (Google)</button>
-        <button class="layer-btn" data-layer="osm">🧭 OpenStreetMap</button>
+        <button class="layer-btn active" data-layer="hybrid">🛰️ Híbrido</button>
+        <button class="layer-btn" data-layer="satellite">🌎 Satélite</button>
+        <button class="layer-btn" data-layer="streets">🗺️ Ruas</button>
+        <button class="layer-btn" data-layer="osm">🧭 OSM</button>
         <button class="layer-btn" data-layer="terrain">⛰️ Relevo</button>
       </div>
+
+      <!-- Botão de Localização Estilo Google Maps (Acima do Zoom) -->
+      <button class="gmaps-locate-btn" id="btnMyLocation" title="Minha localização GPS atual">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="7"></circle>
+          <circle cx="12" cy="12" r="2.5" fill="currentColor"></circle>
+          <line x1="12" y1="2" x2="12" y2="5"></line>
+          <line x1="12" y1="19" x2="12" y2="22"></line>
+          <line x1="2" y1="12" x2="5" y2="12"></line>
+          <line x1="19" y1="12" x2="22" y2="12"></line>
+        </svg>
+      </button>
     </div>
   </div>
 
@@ -945,7 +1237,7 @@
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     // ==========================================
-    // 0. BANCO INDEXEDDB + SERVICE WORKER (AUTO-CACHE & TTL)
+    // 0. BANCO INDEXEDDB + SERVICE WORKER (AUTO-CACHE & MULTI-KML)
     // ==========================================
     const TILE_CACHE_NAME = 'kml-map-tiles-v3';
     const IDB_NAME = 'kml_offline_cache_db';
@@ -977,9 +1269,7 @@
         const tx = db.transaction(IDB_CONFIG, 'readwrite');
         tx.objectStore(IDB_CONFIG).put({ key: 'ttl_ms', value: Number(ttlMs) });
         localStorage.setItem('cache_ttl_ms', String(ttlMs));
-      } catch (e) {
-        console.warn(e);
-      }
+      } catch (e) {}
     }
 
     async function recordTileTimestampInDB(url) {
@@ -1029,18 +1319,15 @@
           if (navigator.storage && navigator.storage.persist) {
             await navigator.storage.persist();
           }
-          // Sincroniza o TTL salvo com o IndexedDB
           const savedTtl = localStorage.getItem('cache_ttl_ms');
           if (savedTtl !== null) {
             await saveTTLToDB(Number(savedTtl));
           } else {
-            await saveTTLToDB(2592000000); // 30 dias padrão
+            await saveTTLToDB(2592000000);
           }
           await requestServiceWorkerPrune();
           refreshStorageStats();
-        } catch (err) {
-          console.warn('Service Worker aviso:', err);
-        }
+        } catch (err) {}
       });
     }
 
@@ -1066,10 +1353,10 @@
     function updateNetworkBadge() {
       const pill = document.getElementById('netStatusPill');
       if (navigator.onLine) {
-        pill.textContent = '● Online (Auto-Cache)';
+        pill.textContent = '● Online';
         pill.classList.remove('offline');
       } else {
-        pill.textContent = '⚡ Modo Offline (Cache)';
+        pill.textContent = '⚡ Offline';
         pill.classList.add('offline');
       }
     }
@@ -1078,7 +1365,58 @@
     updateNetworkBadge();
 
     // ==========================================
-    // 1. INICIALIZAÇÃO DO MAPA E CAMADAS (TILES)
+    // 1. SIDEBAR ESQUERDA (DRAWER) & CLIQUE NO ÍCONE DO PROGRAMA
+    // ==========================================
+    const leftSidebar = document.getElementById('leftSidebar');
+    const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+
+    function isMobileViewport() {
+      return window.innerWidth <= 768;
+    }
+
+    function openSidebar() {
+      leftSidebar.classList.remove('collapsed');
+      if (isMobileViewport()) {
+        sidebarBackdrop.classList.add('active');
+      }
+      setTimeout(() => map.invalidateSize(), 260);
+    }
+
+    function closeSidebar() {
+      leftSidebar.classList.add('collapsed');
+      sidebarBackdrop.classList.remove('active');
+      setTimeout(() => map.invalidateSize(), 260);
+    }
+
+    function toggleSidebar() {
+      if (leftSidebar.classList.contains('collapsed')) {
+        openSidebar();
+      } else {
+        closeSidebar();
+      }
+    }
+
+    // No celular começa com a sidebar recolhida para mostrar o mapa inteiro
+    if (isMobileViewport()) {
+      leftSidebar.classList.add('collapsed');
+    }
+
+    document.getElementById('btnToggleSidebar').addEventListener('click', toggleSidebar);
+    document.getElementById('btnCloseSidebarMobile').addEventListener('click', closeSidebar);
+    sidebarBackdrop.addEventListener('click', closeSidebar);
+
+    // Clicar no ícone/logo do programa abre o seletor de arquivos KML
+    function triggerOpenFileDialog() {
+      const input = document.getElementById('fileInput');
+      input.value = '';
+      input.click();
+    }
+
+    document.getElementById('brandOpenKml').addEventListener('click', triggerOpenFileDialog);
+    document.getElementById('btnAddKmlToolbar').addEventListener('click', triggerOpenFileDialog);
+
+    // ==========================================
+    // 2. INICIALIZAÇÃO DO MAPA E CAMADAS (TILES)
     // ==========================================
     const map = L.map('map', {
       zoomControl: false,
@@ -1123,10 +1461,7 @@
         referrerPolicy: 'origin',
         attribution: layerConfigs[key].name
       });
-      // Ao carregar quadrantes online durante a navegação, atualiza contador do cache
-      layer.on('tileload', () => {
-        scheduleCacheCountUpdate();
-      });
+      layer.on('tileload', () => scheduleCacheCountUpdate());
       tileLayers[key] = layer;
     });
 
@@ -1147,24 +1482,603 @@
       });
     });
 
-    const kmlLayerGroup = L.featureGroup().addTo(map);
-    let parsedFeatures = [];
+    // ==========================================
+    // 3. GERENCIADOR DE MÚLTIPLOS KMLs SIMULTÂNEOS
+    // ==========================================
+    const DATASET_PALETTE = [
+      '#3b82f6', // Azul
+      '#10b981', // Esmeralda
+      '#f59e0b', // Laranja
+      '#a855f7', // Roxo
+      '#ec4899', // Rosa
+      '#06b6d4', // Ciano
+      '#84cc16', // Lima
+      '#f43f5e'  // Coral
+    ];
+
+    let loadedDatasets = []; // [{ id, fileName, xmlText, color, visible, layerGroup, features }]
+    let activeDatasetFilter = 'all'; // 'all' ou dataset.id
+    let currentTypeFilter = 'all'; // 'all', 'point', 'line'
     let showLabels = true;
-    let currentFilter = 'all';
+
+    function getAllVisibleBounds() {
+      const group = L.featureGroup();
+      loadedDatasets.forEach(ds => {
+        if (ds.visible && ds.layerGroup.getLayers().length > 0) {
+          ds.layerGroup.getLayers().forEach(l => group.addLayer(l));
+        }
+      });
+      return group.getLayers().length > 0 ? group.getBounds() : null;
+    }
+
+    function persistDatasetsToStorage() {
+      try {
+        const serializable = loadedDatasets.map(ds => ({
+          id: ds.id,
+          fileName: ds.fileName,
+          xmlText: ds.xmlText,
+          color: ds.color,
+          visible: ds.visible
+        }));
+        localStorage.setItem('multi_kml_datasets_v1', JSON.stringify(serializable));
+      } catch (e) {
+        console.warn('Limite de localStorage atingido para múltiplos KMLs.');
+      }
+    }
+
+    function kmlColorToHex(kmlColor, fallbackHex) {
+      if (!kmlColor || kmlColor.length !== 8) return { color: fallbackHex || '#ef4444', opacity: 0.9 };
+      const aa = parseInt(kmlColor.substring(0, 2), 16) / 255;
+      const bb = kmlColor.substring(2, 4);
+      const gg = kmlColor.substring(4, 6);
+      const rr = kmlColor.substring(6, 8);
+      return {
+        color: `#${rr}${gg}${bb}`,
+        opacity: isNaN(aa) ? 0.9 : Math.max(0.3, aa)
+      };
+    }
+
+    function parseCoordinatesString(coordText) {
+      if (!coordText) return [];
+      const tuples = coordText.trim().split(/\s+/);
+      const latLngs = [];
+      for (const t of tuples) {
+        const parts = t.split(',');
+        if (parts.length >= 2) {
+          const lng = parseFloat(parts[0]);
+          const lat = parseFloat(parts[1]);
+          if (!isNaN(lat) && !isNaN(lng)) {
+            latLngs.push([lat, lng]);
+          }
+        }
+      }
+      return latLngs;
+    }
+
+    function extractCleanSummary(htmlDescription) {
+      if (!htmlDescription) return 'Sem descrição detalhada';
+      const tmp = document.createElement('div');
+      tmp.innerHTML = htmlDescription;
+      const text = tmp.innerText || tmp.textContent || '';
+      const lines = text.split(/\n+/).map(l => l.trim()).filter(Boolean);
+      const important = lines.filter(l =>
+        l.includes('LOCALIDADE:') ||
+        l.includes('ENDERECO:') ||
+        l.includes('NOME DO RESPONSÁVEL:') ||
+        l.includes('NOME DO ESTABELECIMENTO:') ||
+        l.includes('ESPÉCIES:') ||
+        l.includes('PONTO DE REFERENCIA:')
+      );
+      if (important.length > 0) {
+        return important.slice(0, 3).join(' • ');
+      }
+      return lines.slice(0, 3).join(' • ') || 'Sem descrição';
+    }
+
+    function addKMLDataset(xmlText, fileName = 'Arquivo.kml', customId = null, customColor = null, isVisible = true, autoFit = true) {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+
+      if (xmlDoc.querySelector('parsererror')) {
+        alert(`Erro ao interpretar o XML do arquivo: ${fileName}`);
+        return null;
+      }
+
+      const dsId = customId || ('ds_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6));
+      const dsColor = customColor || DATASET_PALETTE[loadedDatasets.length % DATASET_PALETTE.length];
+      const layerGroup = L.featureGroup();
+      if (isVisible) layerGroup.addTo(map);
+
+      const styleMap = {};
+      xmlDoc.querySelectorAll('Style').forEach(styleEl => {
+        const id = styleEl.getAttribute('id');
+        if (!id) return;
+        const lineColorEl = styleEl.querySelector('LineStyle > color');
+        const lineWidthEl = styleEl.querySelector('LineStyle > width');
+        const polyColorEl = styleEl.querySelector('PolyStyle > color');
+        styleMap['#' + id] = {
+          lineColor: lineColorEl ? kmlColorToHex(lineColorEl.textContent.trim(), dsColor) : null,
+          lineWidth: lineWidthEl ? parseFloat(lineWidthEl.textContent.trim()) : 3.5,
+          polyColor: polyColorEl ? kmlColorToHex(polyColorEl.textContent.trim(), dsColor) : null
+        };
+      });
+
+      const placemarks = xmlDoc.querySelectorAll('Placemark');
+      const features = [];
+      let featureIndex = 0;
+
+      placemarks.forEach((pm) => {
+        const nameEl = pm.querySelector('name');
+        const descEl = pm.querySelector('description');
+        const name = nameEl ? nameEl.textContent.trim() : `Item ${featureIndex + 1}`;
+        let description = descEl ? descEl.textContent.trim() : '';
+
+        if (!description) {
+          const simpleDatas = pm.querySelectorAll('SimpleData, Data');
+          if (simpleDatas.length > 0) {
+            const rows = [];
+            simpleDatas.forEach(d => {
+              const k = d.getAttribute('name') || 'Campo';
+              const v = d.textContent.trim();
+              if (v) rows.push(`<p><b>${k}:</b> ${v}</p>`);
+            });
+            description = rows.join('');
+          }
+        }
+
+        let strokeColor = dsColor;
+        let strokeWidth = 3.5;
+        let fillColor = dsColor;
+        let fillOpacity = 0.15;
+
+        const inlineLineColor = pm.querySelector('LineStyle > color');
+        const inlineLineWidth = pm.querySelector('LineStyle > width');
+        const inlinePolyColor = pm.querySelector('PolyStyle > color');
+        const styleUrlEl = pm.querySelector('styleUrl');
+
+        if (styleUrlEl && styleMap[styleUrlEl.textContent.trim()]) {
+          const st = styleMap[styleUrlEl.textContent.trim()];
+          if (st.lineColor) strokeColor = st.lineColor.color;
+          if (st.lineWidth) strokeWidth = st.lineWidth;
+          if (st.polyColor) {
+            fillColor = st.polyColor.color;
+            fillOpacity = st.polyColor.opacity;
+          }
+        }
+        if (inlineLineColor) strokeColor = kmlColorToHex(inlineLineColor.textContent.trim(), dsColor).color;
+        if (inlineLineWidth) strokeWidth = parseFloat(inlineLineWidth.textContent.trim()) || 3.5;
+        if (inlinePolyColor) {
+          const pc = kmlColorToHex(inlinePolyColor.textContent.trim(), dsColor);
+          fillColor = pc.color;
+          fillOpacity = pc.opacity;
+        }
+
+        // Pontos
+        const pointEls = pm.querySelectorAll('Point');
+        pointEls.forEach(pt => {
+          const coordEl = pt.querySelector('coordinates');
+          const coords = parseCoordinatesString(coordEl ? coordEl.textContent : '');
+          if (coords.length > 0) {
+            const [lat, lng] = coords[0];
+            const id = `${dsId}_feat_${featureIndex++}`;
+
+            const shortLabel = name.length <= 4 ? name : '•';
+            const icon = L.divIcon({
+              className: 'custom-div-icon',
+              html: `<div class="kml-pin" style="width:26px;height:26px;background:${dsColor};">${showLabels ? shortLabel : ''}</div>`,
+              iconSize: [26, 26],
+              iconAnchor: [13, 13],
+              popupAnchor: [0, -13]
+            });
+
+            const marker = L.marker([lat, lng], { icon });
+            const popupHtml = `
+              <div class="popup-header">
+                <span>📍 Ponto ${name}</span>
+                <span style="font-size:10.5px; color:#94a3b8; font-weight:500;">${fileName}</span>
+              </div>
+              <div class="popup-body">${description || '<p>Sem metadados adicionais.</p>'}</div>
+              <div class="popup-footer">
+                <a class="popup-link" href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" rel="noopener">
+                  🗺️ Abrir no Google Maps
+                </a>
+              </div>
+            `;
+            marker.bindPopup(popupHtml, { maxWidth: 340 });
+            marker.on('click', () => highlightSidebarCard(id));
+            layerGroup.addLayer(marker);
+
+            features.push({
+              id,
+              datasetId: dsId,
+              datasetName: fileName,
+              datasetColor: dsColor,
+              type: 'point',
+              name,
+              description,
+              summary: extractCleanSummary(description),
+              lat,
+              lng,
+              layer: marker
+            });
+          }
+        });
+
+        // Linhas / Contornos
+        const lineEls = pm.querySelectorAll('LineString');
+        if (lineEls.length > 0) {
+          const multiCoords = [];
+          lineEls.forEach(ls => {
+            const coordEl = ls.querySelector('coordinates');
+            const coords = parseCoordinatesString(coordEl ? coordEl.textContent : '');
+            if (coords.length > 0) multiCoords.push(coords);
+          });
+
+          if (multiCoords.length > 0) {
+            const id = `${dsId}_feat_${featureIndex++}`;
+            const polyline = L.polyline(multiCoords, {
+              color: strokeColor,
+              weight: Math.max(strokeWidth, 3),
+              opacity: 0.95
+            });
+
+            const center = polyline.getBounds().getCenter();
+            const totalVertices = multiCoords.reduce((acc, c) => acc + c.length, 0);
+            const popupHtml = `
+              <div class="popup-header">
+                <span>📐 ${name}</span>
+                <span style="font-size:10.5px; color:#94a3b8; font-weight:500;">${fileName}</span>
+              </div>
+              <div class="popup-body">
+                ${description ? `<p>${description}</p>` : ''}
+                <p><b>Arquivo:</b> ${fileName}</p>
+                <p><b>Vértices GPS:</b> ${totalVertices} coordenadas</p>
+              </div>
+            `;
+            polyline.bindPopup(popupHtml);
+            polyline.on('click', () => highlightSidebarCard(id));
+            layerGroup.addLayer(polyline);
+
+            features.push({
+              id,
+              datasetId: dsId,
+              datasetName: fileName,
+              datasetColor: dsColor,
+              type: 'line',
+              name,
+              description,
+              summary: `Contorno geométrico com ${totalVertices} vértices GPS.`,
+              lat: center.lat,
+              lng: center.lng,
+              layer: polyline
+            });
+          }
+        }
+
+        // Polígonos
+        const polyEls = pm.querySelectorAll('Polygon');
+        polyEls.forEach(polyEl => {
+          const outerEl = polyEl.querySelector('outerBoundaryIs coordinates');
+          const coords = parseCoordinatesString(outerEl ? outerEl.textContent : '');
+          if (coords.length > 0) {
+            const id = `${dsId}_feat_${featureIndex++}`;
+            const polygon = L.polygon(coords, {
+              color: strokeColor,
+              weight: strokeWidth,
+              fillColor: fillColor,
+              fillOpacity: fillOpacity
+            });
+
+            const center = polygon.getBounds().getCenter();
+            const popupHtml = `
+              <div class="popup-header">
+                <span>⬡ ${name}</span>
+                <span style="font-size:10.5px; color:#94a3b8; font-weight:500;">${fileName}</span>
+              </div>
+              <div class="popup-body">${description || '<p>Polígono KML</p>'}</div>
+            `;
+            polygon.bindPopup(popupHtml);
+            polygon.on('click', () => highlightSidebarCard(id));
+            layerGroup.addLayer(polygon);
+
+            features.push({
+              id,
+              datasetId: dsId,
+              datasetName: fileName,
+              datasetColor: dsColor,
+              type: 'line',
+              name,
+              description,
+              summary: extractCleanSummary(description) || `Polígono com ${coords.length} vértices.`,
+              lat: center.lat,
+              lng: center.lng,
+              layer: polygon
+            });
+          }
+        });
+      });
+
+      const datasetObj = {
+        id: dsId,
+        fileName,
+        xmlText,
+        color: dsColor,
+        visible: isVisible,
+        layerGroup,
+        features
+      };
+
+      loadedDatasets.push(datasetObj);
+      persistDatasetsToStorage();
+      updateUI();
+
+      if (autoFit && layerGroup.getLayers().length > 0) {
+        map.fitBounds(layerGroup.getBounds(), { padding: [36, 36] });
+      }
+      return datasetObj;
+    }
+
+    function toggleDatasetVisibility(dsId) {
+      const ds = loadedDatasets.find(d => d.id === dsId);
+      if (!ds) return;
+      ds.visible = !ds.visible;
+      if (ds.visible) {
+        ds.layerGroup.addTo(map);
+      } else {
+        map.removeLayer(ds.layerGroup);
+      }
+      persistDatasetsToStorage();
+      updateUI();
+    }
+
+    function removeDataset(dsId) {
+      const idx = loadedDatasets.findIndex(d => d.id === dsId);
+      if (idx === -1) return;
+      map.removeLayer(loadedDatasets[idx].layerGroup);
+      loadedDatasets.splice(idx, 1);
+      if (activeDatasetFilter === dsId) {
+        activeDatasetFilter = 'all';
+      }
+      persistDatasetsToStorage();
+      updateUI();
+    }
+
+    function clearAllDatasets() {
+      if (!confirm('Deseja fechar todos os arquivos KML abertos?')) return;
+      loadedDatasets.forEach(ds => map.removeLayer(ds.layerGroup));
+      loadedDatasets = [];
+      activeDatasetFilter = 'all';
+      localStorage.removeItem('multi_kml_datasets_v1');
+      updateUI();
+    }
+
+    document.getElementById('btnClearAllKmls').addEventListener('click', clearAllDatasets);
 
     // ==========================================
-    // 2. GPS EM TEMPO REAL DO USUÁRIO NO CAMPO
+    // 4. RENDERIZAÇÃO DA SIDEBAR ESQUERDA E AGRUPAMENTO POR KML
+    // ==========================================
+    function updateUI() {
+      const filesListEl = document.getElementById('kmlFilesList');
+      filesListEl.innerHTML = '';
+
+      document.getElementById('loadedFilesCount').textContent = loadedDatasets.length;
+      document.getElementById('btnClearAllKmls').style.display = loadedDatasets.length > 0 ? 'inline-flex' : 'none';
+
+      // Chips de arquivos KML carregados
+      if (loadedDatasets.length > 1) {
+        const allChip = document.createElement('div');
+        allChip.className = `kml-file-chip ${activeDatasetFilter === 'all' ? 'active-filter' : ''}`;
+        const totalPts = loadedDatasets.reduce((acc, d) => acc + d.features.length, 0);
+        allChip.innerHTML = `
+          <div class="kml-chip-left">
+            <span class="kml-color-dot" style="background:linear-gradient(135deg,#3b82f6,#10b981);"></span>
+            <span class="kml-chip-name">Mostrar Todos os Arquivos (${loadedDatasets.length})</span>
+            <span class="kml-chip-count">${totalPts} itens</span>
+          </div>
+        `;
+        allChip.addEventListener('click', () => {
+          activeDatasetFilter = 'all';
+          updateUI();
+          const b = getAllVisibleBounds();
+          if (b) map.fitBounds(b, { padding: [36, 36] });
+        });
+        filesListEl.appendChild(allChip);
+      }
+
+      loadedDatasets.forEach(ds => {
+        const chip = document.createElement('div');
+        chip.className = `kml-file-chip ${activeDatasetFilter === ds.id ? 'active-filter' : ''}`;
+        chip.style.opacity = ds.visible ? '1' : '0.5';
+
+        const ptsCount = ds.features.filter(f => f.type === 'point').length;
+        const linesCount = ds.features.filter(f => f.type === 'line').length;
+
+        chip.innerHTML = `
+          <div class="kml-chip-left" title="Clique para filtrar e focar neste KML">
+            <span class="kml-color-dot" style="background:${ds.color};"></span>
+            <span class="kml-chip-name">${ds.fileName}</span>
+            <span class="kml-chip-count">${ptsCount}p / ${linesCount}c</span>
+          </div>
+          <div class="kml-chip-actions">
+            <button class="chip-icon-btn btn-zoom-ds" title="Enquadrar este KML no mapa">🎯</button>
+            <button class="chip-icon-btn btn-vis-ds" title="${ds.visible ? 'Ocultar do mapa' : 'Mostrar no mapa'}">${ds.visible ? '👁️' : '🚫'}</button>
+            <button class="chip-icon-btn danger btn-del-ds" title="Fechar este KML">✕</button>
+          </div>
+        `;
+
+        chip.querySelector('.kml-chip-left').addEventListener('click', () => {
+          activeDatasetFilter = (activeDatasetFilter === ds.id) ? 'all' : ds.id;
+          updateUI();
+          if (ds.visible && ds.layerGroup.getLayers().length > 0) {
+            map.fitBounds(ds.layerGroup.getBounds(), { padding: [36, 36] });
+          }
+        });
+
+        chip.querySelector('.btn-zoom-ds').addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (!ds.visible) toggleDatasetVisibility(ds.id);
+          if (ds.layerGroup.getLayers().length > 0) {
+            map.fitBounds(ds.layerGroup.getBounds(), { padding: [36, 36] });
+          }
+          if (isMobileViewport()) closeSidebar();
+        });
+
+        chip.querySelector('.btn-vis-ds').addEventListener('click', (e) => {
+          e.stopPropagation();
+          toggleDatasetVisibility(ds.id);
+        });
+
+        chip.querySelector('.btn-del-ds').addEventListener('click', (e) => {
+          e.stopPropagation();
+          removeDataset(ds.id);
+        });
+
+        filesListEl.appendChild(chip);
+      });
+
+      // Contadores de features
+      let visibleFeatures = [];
+      loadedDatasets.forEach(ds => {
+        if (!ds.visible) return;
+        if (activeDatasetFilter !== 'all' && activeDatasetFilter !== ds.id) return;
+        visibleFeatures = visibleFeatures.concat(ds.features);
+      });
+
+      const pointsCount = visibleFeatures.filter(f => f.type === 'point').length;
+      const linesCount = visibleFeatures.filter(f => f.type === 'line').length;
+
+      document.getElementById('totalItemsPill').textContent = visibleFeatures.length;
+      document.getElementById('tabAllCount').textContent = visibleFeatures.length;
+      document.getElementById('tabPointCount').textContent = pointsCount;
+      document.getElementById('tabLineCount').textContent = linesCount;
+
+      renderSidebarItems();
+    }
+
+    function renderSidebarItems() {
+      const listEl = document.getElementById('itemsList');
+      const query = document.getElementById('searchInput').value.trim().toLowerCase();
+      listEl.innerHTML = '';
+
+      if (loadedDatasets.length === 0) {
+        const emptyBox = document.createElement('div');
+        emptyBox.className = 'empty-state-box';
+        emptyBox.innerHTML = `
+          <div style="font-size: 38px;">📍</div>
+          <h3>Nenhum arquivo KML aberto</h3>
+          <p>Clique no <b>ícone 📍 do topo</b>, no botão <b>"📂 Adicionar KML"</b> ou arraste vários arquivos <code>.kml</code> / <code>.kmz</code> para a tela.</p>
+          <p style="font-size:11px; color:#60a5fa;">Você pode abrir vários KMLs ao mesmo tempo — cada um recebe uma cor própria e fica separado aqui na barra esquerda.</p>
+        `;
+        emptyBox.addEventListener('click', triggerOpenFileDialog);
+        listEl.appendChild(emptyBox);
+        return;
+      }
+
+      let totalRendered = 0;
+
+      loadedDatasets.forEach(ds => {
+        if (!ds.visible) return;
+        if (activeDatasetFilter !== 'all' && activeDatasetFilter !== ds.id) return;
+
+        const matchingFeatures = ds.features.filter(item => {
+          if (currentTypeFilter !== 'all' && item.type !== currentTypeFilter) return false;
+          if (!query) return true;
+          const haystack = `${item.name} ${item.summary} ${item.description} ${ds.fileName}`.toLowerCase();
+          return haystack.includes(query);
+        });
+
+        if (matchingFeatures.length === 0) return;
+
+        // Cabeçalho separador por arquivo KML
+        const groupHeader = document.createElement('div');
+        groupHeader.className = 'dataset-group-header';
+        groupHeader.style.borderLeftColor = ds.color;
+        groupHeader.innerHTML = `
+          <span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">📂 ${ds.fileName}</span>
+          <span>${matchingFeatures.length} itens</span>
+        `;
+        listEl.appendChild(groupHeader);
+
+        matchingFeatures.forEach(item => {
+          totalRendered++;
+          const card = document.createElement('div');
+          card.className = 'item-card';
+          card.id = `card_${item.id}`;
+
+          const isPoint = item.type === 'point';
+          const badgeText = isPoint ? item.name : '📐';
+          const titleText = isPoint ? `Ponto #${item.name}` : item.name;
+          const badgeBg = isPoint ? ds.color : '#ef4444';
+
+          card.innerHTML = `
+            <div class="item-top">
+              <div class="item-title">
+                <span class="point-badge" style="background:${badgeBg};">${badgeText}</span>
+                <span>${titleText}</span>
+              </div>
+              <span class="item-type-tag" title="${ds.fileName}">${ds.fileName}</span>
+            </div>
+            <div class="item-summary">${item.summary}</div>
+            <div class="item-coords">
+              <span>Lat: ${item.lat.toFixed(5)}, Lng: ${item.lng.toFixed(5)}</span>
+              <span style="color:#60a5fa; font-weight:600;">Focar →</span>
+            </div>
+          `;
+
+          card.addEventListener('click', () => {
+            highlightSidebarCard(item.id);
+            if (isMobileViewport()) {
+              closeSidebar();
+            }
+            if (item.type === 'point') {
+              map.flyTo([item.lat, item.lng], Math.max(map.getZoom(), 17), { duration: 0.5 });
+              item.layer.openPopup();
+            } else if (item.layer.getBounds) {
+              map.fitBounds(item.layer.getBounds(), { padding: [40, 40] });
+              item.layer.openPopup();
+            }
+          });
+
+          listEl.appendChild(card);
+        });
+      });
+
+      if (totalRendered === 0) {
+        listEl.innerHTML = `
+          <div style="text-align:center; padding: 32px 16px; color: var(--text-muted); font-size: 13px;">
+            Nenhum ponto ou contorno encontrado para o filtro atual.
+          </div>
+        `;
+      }
+    }
+
+    function highlightSidebarCard(featureId) {
+      document.querySelectorAll('.item-card.active').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(`card_${featureId}`);
+      if (target) {
+        target.classList.add('active');
+        target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }
+
+    // ==========================================
+    // 5. GPS EM TEMPO REAL DO USUÁRIO NO CAMPO
     // ==========================================
     let userGpsMarker = null;
     let userAccuracyCircle = null;
 
-    document.getElementById('btnMyLocation').addEventListener('click', () => {
+    document.getElementById('btnMyLocation').addEventListener('click', (e) => {
+      e.stopPropagation();
+      const locBtn = document.getElementById('btnMyLocation');
       if (!navigator.geolocation) {
         alert('Geolocalização GPS não é suportada neste aparelho.');
         return;
       }
+      locBtn.classList.add('locating');
       navigator.geolocation.getCurrentPosition(
         (pos) => {
+          locBtn.classList.remove('locating');
+          locBtn.classList.add('active-gps');
           const { latitude, longitude, accuracy } = pos.coords;
           if (!userGpsMarker) {
             const gpsIcon = L.divIcon({
@@ -1189,6 +2103,7 @@
           map.flyTo([latitude, longitude], 17);
         },
         (err) => {
+          locBtn.classList.remove('locating');
           alert('Não foi possível obter o sinal GPS: ' + err.message);
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
@@ -1196,7 +2111,7 @@
     });
 
     // ==========================================
-    // 3. GERENCIADOR DE CACHE + CONFIGURAÇÃO DE EXPIRAÇÃO (TTL)
+    // 6. GERENCIADOR DE CACHE + CONFIGURAÇÃO DE EXPIRAÇÃO (TTL)
     // ==========================================
     let cacheCountTimer = null;
     function scheduleCacheCountUpdate() {
@@ -1228,12 +2143,9 @@
           const quotaGB = ((est.quota || 0) / (1024 * 1024 * 1024)).toFixed(1);
           document.getElementById('storageQuotaInfo').textContent = `${usedMB} MB usados de ${quotaGB} GB`;
         }
-      } catch (e) {
-        console.warn(e);
-      }
+      } catch (e) {}
     }
 
-    // Inicializar UI de configuração de TTL
     const ttlPresetSelect = document.getElementById('cacheTtlPreset');
     const customTtlWrap = document.getElementById('customTtlWrap');
     const ttlStatusDescription = document.getElementById('ttlStatusDescription');
@@ -1313,7 +2225,8 @@
     let isDownloadingTiles = false;
     document.getElementById('btnStartPreload').addEventListener('click', async () => {
       if (isDownloadingTiles) return;
-      const bounds = kmlLayerGroup.getLayers().length > 0 ? kmlLayerGroup.getBounds() : map.getBounds();
+      const visibleBounds = getAllVisibleBounds();
+      const bounds = visibleBounds || map.getBounds();
       const maxZ = parseInt(document.getElementById('downloadZoomMode').value, 10);
       const minZ = 12;
 
@@ -1399,446 +2312,79 @@
     });
 
     // ==========================================
-    // 4. PARSER UNIVERSAL DE KML + PERSISTÊNCIA LOCAL
+    // 7. EVENTOS DE BUSCA, RÓTULOS E UPLOAD MÚLTIPLO
     // ==========================================
-    function kmlColorToHex(kmlColor) {
-      if (!kmlColor || kmlColor.length !== 8) return { color: '#ef4444', opacity: 0.9 };
-      const aa = parseInt(kmlColor.substring(0, 2), 16) / 255;
-      const bb = kmlColor.substring(2, 4);
-      const gg = kmlColor.substring(4, 6);
-      const rr = kmlColor.substring(6, 8);
-      return {
-        color: `#${rr}${gg}${bb}`,
-        opacity: isNaN(aa) ? 0.9 : Math.max(0.3, aa)
-      };
-    }
-
-    function parseCoordinatesString(coordText) {
-      if (!coordText) return [];
-      const tuples = coordText.trim().split(/\s+/);
-      const latLngs = [];
-      for (const t of tuples) {
-        const parts = t.split(',');
-        if (parts.length >= 2) {
-          const lng = parseFloat(parts[0]);
-          const lat = parseFloat(parts[1]);
-          if (!isNaN(lat) && !isNaN(lng)) {
-            latLngs.push([lat, lng]);
-          }
-        }
-      }
-      return latLngs;
-    }
-
-    function extractCleanSummary(htmlDescription) {
-      if (!htmlDescription) return 'Sem descrição detalhada';
-      const tmp = document.createElement('div');
-      tmp.innerHTML = htmlDescription;
-      const text = tmp.innerText || tmp.textContent || '';
-      const lines = text.split(/\n+/).map(l => l.trim()).filter(Boolean);
-      const important = lines.filter(l =>
-        l.includes('LOCALIDADE:') ||
-        l.includes('ENDERECO:') ||
-        l.includes('NOME DO RESPONSÁVEL:') ||
-        l.includes('NOME DO ESTABELECIMENTO:') ||
-        l.includes('ESPÉCIES:') ||
-        l.includes('PONTO DE REFERENCIA:')
-      );
-      if (important.length > 0) {
-        return important.slice(0, 3).join(' • ');
-      }
-      return lines.slice(0, 3).join(' • ') || 'Sem descrição';
-    }
-
-    function parseKML(xmlText, fileName = 'Arquivo.kml', saveToStorage = true) {
-      const parser = new DOMParser();
-      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-
-      const parserError = xmlDoc.querySelector('parsererror');
-      if (parserError) {
-        alert('Erro ao interpretar o XML do arquivo KML.');
-        return;
-      }
-
-      if (saveToStorage) {
-        try {
-          localStorage.setItem('saved_kml_content', xmlText);
-          localStorage.setItem('saved_kml_filename', fileName);
-        } catch (e) {
-          console.warn('KML grande demais para localStorage, mantendo em memória.');
-        }
-      }
-
-      kmlLayerGroup.clearLayers();
-      parsedFeatures = [];
-
-      const styleMap = {};
-      xmlDoc.querySelectorAll('Style').forEach(styleEl => {
-        const id = styleEl.getAttribute('id');
-        if (!id) return;
-        const lineColorEl = styleEl.querySelector('LineStyle > color');
-        const lineWidthEl = styleEl.querySelector('LineStyle > width');
-        const polyColorEl = styleEl.querySelector('PolyStyle > color');
-        styleMap['#' + id] = {
-          lineColor: lineColorEl ? kmlColorToHex(lineColorEl.textContent.trim()) : null,
-          lineWidth: lineWidthEl ? parseFloat(lineWidthEl.textContent.trim()) : 3,
-          polyColor: polyColorEl ? kmlColorToHex(polyColorEl.textContent.trim()) : null
-        };
-      });
-
-      const placemarks = xmlDoc.querySelectorAll('Placemark');
-      let featureIndex = 0;
-
-      placemarks.forEach((pm) => {
-        const nameEl = pm.querySelector('name');
-        const descEl = pm.querySelector('description');
-        const name = nameEl ? nameEl.textContent.trim() : `Item ${featureIndex + 1}`;
-        let description = descEl ? descEl.textContent.trim() : '';
-
-        if (!description) {
-          const simpleDatas = pm.querySelectorAll('SimpleData, Data');
-          if (simpleDatas.length > 0) {
-            const rows = [];
-            simpleDatas.forEach(d => {
-              const k = d.getAttribute('name') || 'Campo';
-              const v = d.textContent.trim();
-              if (v) rows.push(`<p><b>${k}:</b> ${v}</p>`);
-            });
-            description = rows.join('');
-          }
-        }
-
-        let strokeColor = '#ef4444';
-        let strokeWidth = 3.5;
-        let fillColor = '#ef4444';
-        let fillOpacity = 0.15;
-
-        const inlineLineColor = pm.querySelector('LineStyle > color');
-        const inlineLineWidth = pm.querySelector('LineStyle > width');
-        const inlinePolyColor = pm.querySelector('PolyStyle > color');
-        const styleUrlEl = pm.querySelector('styleUrl');
-
-        if (styleUrlEl && styleMap[styleUrlEl.textContent.trim()]) {
-          const st = styleMap[styleUrlEl.textContent.trim()];
-          if (st.lineColor) strokeColor = st.lineColor.color;
-          if (st.lineWidth) strokeWidth = st.lineWidth;
-          if (st.polyColor) {
-            fillColor = st.polyColor.color;
-            fillOpacity = st.polyColor.opacity;
-          }
-        }
-        if (inlineLineColor) strokeColor = kmlColorToHex(inlineLineColor.textContent.trim()).color;
-        if (inlineLineWidth) strokeWidth = parseFloat(inlineLineWidth.textContent.trim()) || 3.5;
-        if (inlinePolyColor) {
-          const pc = kmlColorToHex(inlinePolyColor.textContent.trim());
-          fillColor = pc.color;
-          fillOpacity = pc.opacity;
-        }
-
-        const pointEls = pm.querySelectorAll('Point');
-        pointEls.forEach(pt => {
-          const coordEl = pt.querySelector('coordinates');
-          const coords = parseCoordinatesString(coordEl ? coordEl.textContent : '');
-          if (coords.length > 0) {
-            const [lat, lng] = coords[0];
-            const id = `feat_${featureIndex++}`;
-
-            const shortLabel = name.length <= 4 ? name : '•';
-            const icon = L.divIcon({
-              className: 'custom-div-icon',
-              html: `<div class="kml-pin" style="width:26px;height:26px;">${showLabels ? shortLabel : ''}</div>`,
-              iconSize: [26, 26],
-              iconAnchor: [13, 13],
-              popupAnchor: [0, -13]
-            });
-
-            const marker = L.marker([lat, lng], { icon });
-            const popupHtml = `
-              <div class="popup-header">
-                <span>📍 Ponto ${name}</span>
-              </div>
-              <div class="popup-body">${description || '<p>Sem metadados adicionais.</p>'}</div>
-              <div class="popup-footer">
-                <a class="popup-link" href="https://www.google.com/maps?q=${lat},${lng}" target="_blank" rel="noopener">
-                  🗺️ Abrir no Google Maps
-                </a>
-              </div>
-            `;
-            marker.bindPopup(popupHtml, { maxWidth: 340 });
-            marker.on('click', () => highlightSidebarCard(id));
-            kmlLayerGroup.addLayer(marker);
-
-            parsedFeatures.push({
-              id,
-              type: 'point',
-              name,
-              description,
-              summary: extractCleanSummary(description),
-              lat,
-              lng,
-              layer: marker
-            });
-          }
-        });
-
-        const lineEls = pm.querySelectorAll('LineString');
-        if (lineEls.length > 0) {
-          const multiCoords = [];
-          lineEls.forEach(ls => {
-            const coordEl = ls.querySelector('coordinates');
-            const coords = parseCoordinatesString(coordEl ? coordEl.textContent : '');
-            if (coords.length > 0) multiCoords.push(coords);
-          });
-
-          if (multiCoords.length > 0) {
-            const id = `feat_${featureIndex++}`;
-            const polyline = L.polyline(multiCoords, {
-              color: strokeColor,
-              weight: Math.max(strokeWidth, 3),
-              opacity: 0.95
-            });
-
-            const center = polyline.getBounds().getCenter();
-            const totalVertices = multiCoords.reduce((acc, c) => acc + c.length, 0);
-            const popupHtml = `
-              <div class="popup-header">
-                <span>📐 ${name}</span>
-              </div>
-              <div class="popup-body">
-                ${description ? `<p>${description}</p>` : ''}
-                <p><b>Tipo:</b> Linha / Contorno de Setor</p>
-                <p><b>Vértices GPS:</b> ${totalVertices} coordenadas</p>
-              </div>
-            `;
-            polyline.bindPopup(popupHtml);
-            polyline.on('click', () => highlightSidebarCard(id));
-            kmlLayerGroup.addLayer(polyline);
-
-            parsedFeatures.push({
-              id,
-              type: 'line',
-              name,
-              description,
-              summary: `Contorno geométrico com ${totalVertices} vértices de coordenadas GPS.`,
-              lat: center.lat,
-              lng: center.lng,
-              layer: polyline
-            });
-          }
-        }
-
-        const polyEls = pm.querySelectorAll('Polygon');
-        polyEls.forEach(polyEl => {
-          const outerEl = polyEl.querySelector('outerBoundaryIs coordinates');
-          const coords = parseCoordinatesString(outerEl ? outerEl.textContent : '');
-          if (coords.length > 0) {
-            const id = `feat_${featureIndex++}`;
-            const polygon = L.polygon(coords, {
-              color: strokeColor,
-              weight: strokeWidth,
-              fillColor: fillColor,
-              fillOpacity: fillOpacity
-            });
-
-            const center = polygon.getBounds().getCenter();
-            const popupHtml = `
-              <div class="popup-header">
-                <span>⬡ ${name}</span>
-              </div>
-              <div class="popup-body">${description || '<p>Polígono KML</p>'}</div>
-            `;
-            polygon.bindPopup(popupHtml);
-            polygon.on('click', () => highlightSidebarCard(id));
-            kmlLayerGroup.addLayer(polygon);
-
-            parsedFeatures.push({
-              id,
-              type: 'line',
-              name,
-              description,
-              summary: extractCleanSummary(description) || `Polígono com ${coords.length} vértices.`,
-              lat: center.lat,
-              lng: center.lng,
-              layer: polygon
-            });
-          }
-        });
-      });
-
-      document.getElementById('currentFileName').textContent = fileName;
-      document.getElementById('btnClearKml').style.display = 'inline-flex';
-      updateStatsAndList();
-
-      if (kmlLayerGroup.getLayers().length > 0) {
-        map.fitBounds(kmlLayerGroup.getBounds(), { padding: [36, 36] });
-      }
-    }
-
-    function updateStatsAndList() {
-      const pointsCount = parsedFeatures.filter(f => f.type === 'point').length;
-      const linesCount = parsedFeatures.filter(f => f.type === 'line').length;
-
-      document.getElementById('countPoints').textContent = pointsCount;
-      document.getElementById('countLines').textContent = linesCount;
-      document.getElementById('tabAllCount').textContent = parsedFeatures.length;
-      document.getElementById('tabPointCount').textContent = pointsCount;
-      document.getElementById('tabLineCount').textContent = linesCount;
-
-      renderSidebarList();
-    }
-
-    function renderSidebarList() {
-      const listEl = document.getElementById('itemsList');
-      const query = document.getElementById('searchInput').value.trim().toLowerCase();
-      listEl.innerHTML = '';
-
-      if (parsedFeatures.length === 0) {
-        listEl.innerHTML = `
-          <div class="empty-state-box">
-            <div style="font-size: 36px;">📂</div>
-            <h3>Nenhum arquivo KML aberto</h3>
-            <p>Clique em <b>"📂 Abrir KML / KMZ"</b> no topo ou arraste seu arquivo para qualquer lugar da tela.</p>
-            <p style="font-size:11px; color:#60a5fa;">Enquanto você navega online pelo mapa, todos os quadrantes visitados ficam salvos automaticamente no cache pelo tempo que você configurar.</p>
-          </div>
-        `;
-        return;
-      }
-
-      const filtered = parsedFeatures.filter(item => {
-        if (currentFilter !== 'all' && item.type !== currentFilter) return false;
-        if (!query) return true;
-        const haystack = `${item.name} ${item.summary} ${item.description}`.toLowerCase();
-        return haystack.includes(query);
-      });
-
-      if (filtered.length === 0) {
-        listEl.innerHTML = `
-          <div style="text-align:center; padding: 32px 16px; color: var(--text-muted); font-size: 13px;">
-            Nenhum ponto ou geometria encontrada para "${query}".
-          </div>
-        `;
-        return;
-      }
-
-      filtered.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        card.id = `card_${item.id}`;
-
-        const isPoint = item.type === 'point';
-        const badgeClass = isPoint ? '' : 'poly';
-        const badgeText = isPoint ? item.name : '📐';
-        const titleText = isPoint ? `Ponto #${item.name}` : item.name;
-        const typeLabel = isPoint ? 'Ponto GPS' : 'Contorno / Área';
-
-        card.innerHTML = `
-          <div class="item-top">
-            <div class="item-title">
-              <span class="point-badge ${badgeClass}">${badgeText}</span>
-              <span>${titleText}</span>
-            </div>
-            <span class="item-type-tag">${typeLabel}</span>
-          </div>
-          <div class="item-summary">${item.summary}</div>
-          <div class="item-coords">
-            <span>Lat: ${item.lat.toFixed(6)}, Lng: ${item.lng.toFixed(6)}</span>
-            <span style="color:#60a5fa; font-weight:600;">Ver →</span>
-          </div>
-        `;
-
-        card.addEventListener('click', () => {
-          highlightSidebarCard(item.id);
-          if (item.type === 'point') {
-            map.flyTo([item.lat, item.lng], Math.max(map.getZoom(), 17), { duration: 0.5 });
-            item.layer.openPopup();
-          } else if (item.layer.getBounds) {
-            map.fitBounds(item.layer.getBounds(), { padding: [40, 40] });
-            item.layer.openPopup();
-          }
-        });
-
-        listEl.appendChild(card);
-      });
-    }
-
-    function highlightSidebarCard(featureId) {
-      document.querySelectorAll('.item-card.active').forEach(el => el.classList.remove('active'));
-      const target = document.getElementById(`card_${featureId}`);
-      if (target) {
-        target.classList.add('active');
-        target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }
-
-    document.getElementById('searchInput').addEventListener('input', renderSidebarList);
+    document.getElementById('searchInput').addEventListener('input', renderSidebarItems);
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
-        currentFilter = btn.dataset.filter;
-        renderSidebarList();
+        currentTypeFilter = btn.dataset.filter;
+        renderSidebarItems();
       });
     });
 
     document.getElementById('btnFitBounds').addEventListener('click', () => {
-      if (kmlLayerGroup.getLayers().length > 0) {
-        map.fitBounds(kmlLayerGroup.getBounds(), { padding: [36, 36] });
+      const b = getAllVisibleBounds();
+      if (b) {
+        map.fitBounds(b, { padding: [36, 36] });
       }
     });
 
     document.getElementById('btnToggleLabels').addEventListener('click', () => {
       showLabels = !showLabels;
-      parsedFeatures.forEach(f => {
-        if (f.type === 'point') {
-          const shortLabel = f.name.length <= 4 ? f.name : '•';
-          const newIcon = L.divIcon({
-            className: 'custom-div-icon',
-            html: `<div class="kml-pin" style="width:26px;height:26px;">${showLabels ? shortLabel : ''}</div>`,
-            iconSize: [26, 26],
-            iconAnchor: [13, 13],
-            popupAnchor: [0, -13]
-          });
-          f.layer.setIcon(newIcon);
-        }
+      loadedDatasets.forEach(ds => {
+        ds.features.forEach(f => {
+          if (f.type === 'point') {
+            const shortLabel = f.name.length <= 4 ? f.name : '•';
+            const newIcon = L.divIcon({
+              className: 'custom-div-icon',
+              html: `<div class="kml-pin" style="width:26px;height:26px;background:${ds.color};">${showLabels ? shortLabel : ''}</div>`,
+              iconSize: [26, 26],
+              iconAnchor: [13, 13],
+              popupAnchor: [0, -13]
+            });
+            f.layer.setIcon(newIcon);
+          }
+        });
       });
     });
 
-    document.getElementById('btnClearKml').addEventListener('click', () => {
-      localStorage.removeItem('saved_kml_content');
-      localStorage.removeItem('saved_kml_filename');
-      kmlLayerGroup.clearLayers();
-      parsedFeatures = [];
-      document.getElementById('currentFileName').textContent = 'Nenhum arquivo aberto';
-      document.getElementById('btnClearKml').style.display = 'none';
-      updateStatsAndList();
-    });
-
-    async function handleFileLoad(file) {
-      if (!file) return;
-      const ext = file.name.toLowerCase();
-      try {
-        if (ext.endsWith('.kmz')) {
-          const zip = await JSZip.loadAsync(file);
-          const kmlFile = Object.keys(zip.files).find(name => name.toLowerCase().endsWith('.kml'));
-          if (!kmlFile) {
-            alert('Nenhum arquivo .kml encontrado dentro deste arquivo .kmz.');
-            return;
+    async function handleFilesLoad(fileList) {
+      if (!fileList || fileList.length === 0) return;
+      for (const file of Array.from(fileList)) {
+        const ext = file.name.toLowerCase();
+        try {
+          if (ext.endsWith('.kmz')) {
+            const zip = await JSZip.loadAsync(file);
+            const kmlFiles = Object.keys(zip.files).filter(name => name.toLowerCase().endsWith('.kml'));
+            if (kmlFiles.length === 0) {
+              alert(`Nenhum arquivo .kml encontrado dentro de ${file.name}`);
+              continue;
+            }
+            for (const kmlEntry of kmlFiles) {
+              const kmlText = await zip.files[kmlEntry].async('string');
+              addKMLDataset(kmlText, file.name, null, null, true, false);
+            }
+          } else {
+            const text = await file.text();
+            addKMLDataset(text, file.name, null, null, true, false);
           }
-          const kmlText = await zip.files[kmlFile].async('string');
-          parseKML(kmlText, file.name, true);
-        } else {
-          const text = await file.text();
-          parseKML(text, file.name, true);
+        } catch (err) {
+          alert(`Erro ao ler o arquivo ${file.name}: ` + err.message);
         }
-      } catch (err) {
-        alert('Erro ao ler o arquivo: ' + err.message);
       }
+      const b = getAllVisibleBounds();
+      if (b) {
+        map.fitBounds(b, { padding: [36, 36] });
+      }
+      openSidebar();
     }
 
     document.getElementById('fileInput').addEventListener('change', (e) => {
       if (e.target.files && e.target.files.length > 0) {
-        handleFileLoad(e.target.files[0]);
+        handleFilesLoad(e.target.files);
       }
     });
 
@@ -1856,18 +2402,25 @@
       e.preventDefault();
       dropOverlay.classList.remove('active');
       if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-        handleFileLoad(e.dataTransfer.files[0]);
+        handleFilesLoad(e.dataTransfer.files);
       }
     });
 
     window.addEventListener('DOMContentLoaded', () => {
-      const savedKml = localStorage.getItem('saved_kml_content');
-      const savedName = localStorage.getItem('saved_kml_filename');
-      if (savedKml) {
-        parseKML(savedKml, savedName || 'Ultimo_Arquivo.kml', false);
-      } else {
-        updateStatsAndList();
-      }
+      try {
+        const raw = localStorage.getItem('multi_kml_datasets_v1');
+        if (raw) {
+          const savedList = JSON.parse(raw);
+          if (Array.isArray(savedList) && savedList.length > 0) {
+            savedList.forEach(item => {
+              addKMLDataset(item.xmlText, item.fileName, item.id, item.color, item.visible !== false, false);
+            });
+            const b = getAllVisibleBounds();
+            if (b) map.fitBounds(b, { padding: [36, 36] });
+          }
+        }
+      } catch (e) {}
+      updateUI();
       refreshStorageStats();
     });
   </script>
